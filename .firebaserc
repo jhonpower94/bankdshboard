@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "scrapedsite"
+  },
+  "targets": {
+    "scrapedsite": {
+      "hosting": {
+        "efcdashboard": [
+          "efcudashboard"
+        ]
+      }
+    }
+  }
+}

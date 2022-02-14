@@ -1,7 +1,7 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, collection, getDocs, query } from "firebase/firestore";
 import { ajax } from "rxjs/ajax";
 import { db } from "./firebaseinit";
-import { docData } from "rxfire/firestore";
+import { docData, collectionData } from "rxfire/firestore";
 import { checkingsinfo$, savingsinfo$, userinfo$ } from "../redux/action";
 import { store } from "../";
 const cardGen = require("card-number-generator");
@@ -54,6 +54,27 @@ export const getUserInfo = (userid) => {
       store.dispatch(val.store(accountData));
     });
   });
+};
+
+export const getallusers = () => {
+  const collectionRef = collection(db, "users");
+  return collectionData(collectionRef, { idField: "uid" });
+};
+
+export const getuserDataAdmin = (id) => {
+  const davidDocRef = doc(db, `users/${id}`);
+  return docData(davidDocRef, { idField: "uid" });
+};
+
+export const getuserDataBalanceAdmin = (id, type) => {
+  const DocRef = doc(db, "users", `${id}`, "account", type);
+  return docData(DocRef, { idField: "uid" });
+};
+
+export const updateuserDataBalanceAdmin = (id, type, balance) => {
+  const DocRef = doc(db, "users", `${id}`, "account", type);
+  setDoc(DocRef, { balance: parseInt(balance) }, { merge: true });
+  alert("User info has been updated successfully");
 };
 
 export const sendMessage = (message, to, subject) => {

@@ -1,20 +1,20 @@
+import { blue } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Router } from "@reach/router";
+import AccessPage from "./pages/accesspage";
 import AccountIndex from "./pages/account";
 import AdminIndex from "./pages/admin";
+import AllUserTablesmain from "./pages/admin/allusers";
 import AuthenticationIndex from "./pages/authentication";
 import SignIn from "./pages/authentication/login";
 import SignUp from "./pages/authentication/signup";
-
 import DashboardIndex from "./pages/dashboard";
 import ManageCards from "./pages/managecards";
-import Security from "./pages/transfer/securitycode";
 import SettingsIndex from "./pages/settings";
 import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
-import TransferMain from "./pages/transfer/main";
-import AccessPage from "./pages/accesspage";
-import { blue } from "@mui/material/colors";
+import Security from "./pages/transfer/securitycode";
+import UsersIndex from "./pages/admin/user/index";
 
 const theme = createTheme({
   palette: {
@@ -65,7 +65,10 @@ function App() {
           <Security path="security" />
         </DashboardIndex>
 
-        <AdminIndex path="manager" />
+        <AdminIndex path="manager">
+          <AllUserTablesmain path="/" />
+          <UsersIndex path="user/:id" />
+        </AdminIndex>
       </Router>
     </ThemeProvider>
   );
