@@ -49,7 +49,14 @@ const TransferIndex = ({ account }) => {
       data: [
         {
           type: "Credit",
-          amount: 70000,
+          amount: 93800,
+          date: "01/18/22 8:44 am",
+          reciever: "Emma Macarthy",
+          reference: "554747475476647343",
+        },
+        {
+          type: "Debit",
+          amount: 39000,
           date: "02/10/21 8:44 am",
           reciever: "Emma Macarthy",
           reference: "554747475476647343",
@@ -76,9 +83,16 @@ const TransferIndex = ({ account }) => {
         {
           type: "Debit",
           amount: 7000,
-          date: "14/11/21 8:44 am",
+          date: "01/16/22 8:44 am",
           reciever: "Anthony Erics",
           reference: "43434343434343433",
+        },
+        {
+          type: "Credit",
+          amount: 43600,
+          date: "01/18/21 8:44 am",
+          reciever: "Emma Macarthy",
+          reference: "554747475476647343",
         },
         {
           type: "Debit",
