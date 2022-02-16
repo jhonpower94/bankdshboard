@@ -28,7 +28,7 @@ export default function AccessPage() {
           <Alert variant="filled" severity="warning">
             <AlertTitle>Sorry! Account frozen!</AlertTitle>
             Your account is temporary locked down for some security reasons.
-            Click on the link below &#128071; to contact customer service.
+            Click on the livechat button or the link below &#128071; to contact customer service.
             <a href="https://jivo.chat/RQaN8yO0S2" target="_self">
               <Typography variant="h6">
                 Live chat 
