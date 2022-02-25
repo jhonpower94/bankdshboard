@@ -2,7 +2,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
-  Checkbox, FormControl,
+  Checkbox,
+  FormControl,
   FormControlLabel,
   Grid,
   IconButton,
@@ -10,9 +11,11 @@ import {
   InputLabel,
   Link,
   OutlinedInput,
+  Snackbar,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import { makeStyles } from "@mui/styles";
 import { navigate } from "@reach/router";
 import React, { useState } from "react";
@@ -21,7 +24,9 @@ import { auth, signInWithEmailAndPassword } from "../../config/firebaseinit";
 import { loading$ } from "../../redux/action";
 import Logo from "../logo";
 
-//import Logo from "./logo";
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,6 +51,13 @@ export default function SignIn() {
   const loading = useSelector((state) => state.loading);
   const classes = useStyles();
 
+  const [open, setOpen] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+    message: "",
+  });
+
   const dispatch = useDispatch();
   const [remenberme, setRemenberme] = useState(false);
   const [values, setValues] = React.useState({
@@ -56,6 +68,13 @@ export default function SignIn() {
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen({ ...open, open: false });
   };
 
   const handleClickShowPassword = () => {
@@ -85,98 +104,116 @@ export default function SignIn() {
         // ...
       })
       .catch((error) => {
-       // const errorCode = error.code;
+        // const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage);
+
+        setOpen({
+          ...open,
+          open: true,
+          message: "Sorry incorrect login credentials",
+        });
+        dispatch(loading$());
       });
   };
   return (
-    <div className={classes.paper}>
-      <Logo />
-      <Typography component="h1" variant="h5">
-        Sign in
-      </Typography>
-      <form className={classes.form} onSubmit={submitLogin}>
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email"
-          onChange={handleChange("email")}
-          autoComplete="email"
-          autoFocus
-        />
-        <FormControl sx={{ mt: 2 }} variant="outlined" fullWidth>
-          <InputLabel htmlFor="outlined-adornment-password">
-            Password
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={values.showPassword ? "text" : "password"}
-            value={values.password}
-            onChange={handleChange("password")}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {values.showPassword ? (
-                    <VisibilityIcon />
-                  ) : (
-                    <VisibilityOffIcon />
-                  )}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
+    <>
+      <div className={classes.paper}>
+        <Logo />
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form className={classes.form} onSubmit={submitLogin}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            onChange={handleChange("email")}
+            autoComplete="email"
+            autoFocus
           />
-        </FormControl>
-        <FormControlLabel
-          control={
-            <Checkbox
-              color="primary"
-              onChange={() => changepersistance(!remenberme)}
+          <FormControl sx={{ mt: 2 }} variant="outlined" fullWidth>
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-password"
+              type={values.showPassword ? "text" : "password"}
+              value={values.password}
+              onChange={handleChange("password")}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {values.showPassword ? (
+                      <VisibilityIcon />
+                    ) : (
+                      <VisibilityOffIcon />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Password"
             />
-          }
-          label="Remember me"
-        />
-        <LoadingButton
-          type="submit"
-          fullWidth
-          loading={loading.loading}
-          variant="contained"
-          color="primary"
-          disableElevation
-        >
-          {"Sign up"}
-        </LoadingButton>
-        
-      </form>
-      <Grid container spacing={3}>
-        <Grid mt={4} item>
-          <Link
-            component="button"
-            onClick={() => navigate("account/resetpassword")}
-            color="textPrimary"
+          </FormControl>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                onChange={() => changepersistance(!remenberme)}
+              />
+            }
+            label="Remember me"
+          />
+          <LoadingButton
+            type="submit"
+            fullWidth
+            loading={loading.loading}
+            variant="contained"
+            color="primary"
+            disableElevation
           >
-            {`Forgot password`}
-          </Link>
+            {"Sign up"}
+          </LoadingButton>
+        </form>
+        <Grid container spacing={3}>
+          <Grid mt={4} item>
+            <Link
+              component="button"
+              onClick={() => navigate("account/resetpassword")}
+              color="textPrimary"
+            >
+              {`Forgot password`}
+            </Link>
+          </Grid>
+          <Grid mt={4} item>
+            <Link
+              component="button"
+              onClick={() => navigate("signup")}
+              color="textPrimary"
+            >
+              {`Don't have an account`}
+            </Link>
+          </Grid>
         </Grid>
-        <Grid mt={4} item>
-          <Link
-            component="button"
-            onClick={() => navigate("signup")}
-            color="textPrimary"
-          >
-            {`Don't have an account`}
-          </Link>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+      <Snackbar
+        anchorOrigin={{ vertical: open.vertical, horizontal: open.horizontal }}
+        open={open.open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {open.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
