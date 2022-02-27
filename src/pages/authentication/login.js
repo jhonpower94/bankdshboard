@@ -180,7 +180,7 @@ export default function SignIn() {
             color="primary"
             disableElevation
           >
-            {"Sign up"}
+            {"Sign in"}
           </LoadingButton>
         </form>
         <Grid container spacing={3}>
