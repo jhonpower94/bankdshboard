@@ -53,6 +53,7 @@ function App() {
       <Router>
         <AuthenticationIndex path="/">
           <SignIn path="/" />
+          <SignIn path="admin/:pathtonavigate" />
           <SignUp path="signup" />
         </AuthenticationIndex>
 

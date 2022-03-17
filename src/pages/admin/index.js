@@ -10,8 +10,12 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { navigate } from "@reach/router";
+import { doc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import * as React from "react";
+import { docData } from "rxfire/firestore";
+import { db, loggedIn$ } from "../../config/firebaseinit";
 
 const drawerWidth = 240;
 
@@ -22,6 +26,24 @@ function AdminIndex(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  React.useEffect(() => {
+    loggedIn$.subscribe((user) => {
+      if (!user) {
+        navigate("../admin/manager");
+      } else {
+        const querydoc = doc(db, `users/${user.uid}`);
+        docData(querydoc).subscribe((userData) => {
+          console.log(userData.verified);
+          if (userData.verified) {
+            console.log("verified");
+          } else {
+            navigate("../admin/manager");
+          }
+        });
+      }
+    });
+  }, []);
 
   const drawer = (
     <div>
@@ -68,7 +90,7 @@ function AdminIndex(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            EFCU
+            Stantrust Bank
           </Typography>
         </Toolbar>
       </AppBar>

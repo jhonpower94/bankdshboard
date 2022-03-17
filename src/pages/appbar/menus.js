@@ -110,6 +110,7 @@ export default function Menus() {
     signOut(auth)
       .then(() => {
         console.log("Signed out");
+        navigate("../")
       })
       .catch((error) => {
         console.log(error);

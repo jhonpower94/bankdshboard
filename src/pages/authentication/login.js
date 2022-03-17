@@ -18,7 +18,7 @@ import {
 import MuiAlert from "@mui/material/Alert";
 import { makeStyles } from "@mui/styles";
 import { navigate } from "@reach/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { auth, signInWithEmailAndPassword } from "../../config/firebaseinit";
 import { loading$ } from "../../redux/action";
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn({ pathtonavigate }) {
   const loading = useSelector((state) => state.loading);
   const classes = useStyles();
 
@@ -65,6 +65,19 @@ export default function SignIn() {
     password: "",
     showPassword: false,
   });
+
+  useEffect(() => {
+    console.log(pathtonavigate);
+  });
+
+  const switchnavigation = (path) => {
+    switch (path) {
+      case "manager":
+        return "../manager";
+      default:
+        return "dashboard/account";
+    }
+  };
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -100,7 +113,7 @@ export default function SignIn() {
       .then((userCredential) => {
         // Signed in
         dispatch(loading$());
-        navigate("dashboard/account");
+        navigate(switchnavigation(pathtonavigate));
         // ...
       })
       .catch((error) => {
