@@ -6,9 +6,7 @@ import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
 import { useSelector } from "react-redux";
 import {
-  addTransfer,
-  getTransactions,
-  updateUserBalance,
+  addTransfer, sendMessage, updateUserBalance
 } from "../../config/services";
 import "../component/security.css";
 import SecurityCard from "../component/securitycard";
