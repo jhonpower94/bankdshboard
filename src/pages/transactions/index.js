@@ -45,7 +45,7 @@ const TransferIndex = ({ account }) => {
 
   const accountarrays = [
     {
-      accountransaction_type: "savings",
+      accountype: "savings",
       data: [
         ...transactions.savings,
         {
@@ -79,7 +79,7 @@ const TransferIndex = ({ account }) => {
       ],
     },
     {
-      accountransaction_type: "checkings",
+      accountype: "checkings",
       data: [
         ...transactions.checkings,
         {
