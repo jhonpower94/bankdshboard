@@ -132,6 +132,27 @@ export const checkingsinfo$ = (data) => {
   };
 };
 
+export const totaltransaction$ = (data) => {
+  return {
+    type: "TOTALTRANSACTION",
+    payload: data,
+  };
+};
+
+export const totaltransactionsavings$ = (data) => {
+  return {
+    type: "TRNSSAVINGS",
+    payload: data,
+  };
+};
+
+export const totaltransactioncheckings$ = (data) => {
+  return {
+    type: "TRANSCHECKINGS",
+    payload: data,
+  };
+};
+
 export const currentLocation$ = (data) => {
   return {
     type: "LOCATION",

@@ -2,8 +2,14 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Button, Grid, Snackbar, Stack } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { navigate } from "@reach/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
+import { useSelector } from "react-redux";
+import {
+  addTransfer,
+  getTransactions,
+  updateUserBalance,
+} from "../../config/services";
 import "../component/security.css";
 import SecurityCard from "../component/securitycard";
 
@@ -11,14 +17,44 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function Security() {
-  const securitycode = "5991";
+export default function Security({ location }) {
+  const [securitycode, setSecuritycode] = React.useState("");
+  const savingsinfo = useSelector((state) => state.savingsInfos);
+  const checkingsinfo = useSelector((state) => state.checkingsInfos);
+  const userid = useSelector((state) => state.useInfos.id);
+  const transactiontotal = useSelector((state) => state.totalTransactions);
+
   const [open, setOpen] = React.useState({
     open: false,
     vertical: "top",
     horizontal: "center",
+    message: "",
   });
   const [state, setState] = useState({ otp: "", loading: false });
+
+  useEffect(() => {
+    console.log(location.state);
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    console.log(otp);
+    setSecuritycode(`${otp}`);
+
+    //send otp message
+    sendMessage(otp)
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  }, []);
+
+  const switchaccountBalance = (data) => {
+    switch (data) {
+      case "savings":
+        return savingsinfo.balance;
+      case "checkings":
+        return checkingsinfo.balance;
+      default:
+        return savingsinfo.balance;
+    }
+  };
+
   const handleChange = (otp) => {
     setState({ ...state, otp: otp });
   };
@@ -33,17 +69,43 @@ export default function Security() {
   const clear = () => setState({ ...state, otp: "", loading: false });
 
   const submit = () => {
-    console.log(state.otp.length);
+    // get previous balance
+    const oldbalance = switchaccountBalance(location.state.type);
+    const currentAmount = parseInt(location.state.amount);
 
     if (state.otp === securitycode) {
       setState({ ...state, loading: true });
-      setTimeout(() => {
+
+      // get previous balance
+
+      // get prev transaction lenth
+
+      if (currentAmount >= oldbalance) {
+        setOpen({ ...open, message: "Not enough balance", open: true });
+        setState({ ...state, loading: false });
+      } else if (transactiontotal >= 2) {
+        console.log(transactiontotal);
+        // navigate to failed page
         navigate("access");
-      }, 7000);
+      } else {
+        // add transaction
+        addTransfer(userid, location.state).then((data) => {
+          console.log("transaction added");
+          const newbalance = oldbalance - currentAmount;
+          updateUserBalance(userid, location.state.type, newbalance).then(
+            () => {
+              // navigate to success page
+              navigate("success");
+            }
+          );
+        });
+      }
     } else {
-      setOpen({ ...open, open: true });
+      setOpen({ ...open, message: "Incorrect code", open: true });
+      setState({ ...state, loading: false });
     }
   };
+
   return (
     <>
       <Grid
@@ -92,7 +154,7 @@ export default function Security() {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-          {"Incorrect pin"}
+          {open.message}
         </Alert>
       </Snackbar>
     </>

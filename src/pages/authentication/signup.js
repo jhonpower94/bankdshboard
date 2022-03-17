@@ -13,7 +13,7 @@ import {
   MenuItem,
   OutlinedInput,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { navigate } from "@reach/router";
 import PropTypes from "prop-types";
@@ -23,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { countrylist } from "../../config/countrylist";
 import {
   auth,
-  createUserWithEmailAndPassword
+  createUserWithEmailAndPassword,
 } from "../../config/firebaseinit";
 import { addUsers, generateAccounts } from "../../config/services";
 import { loading$ } from "../../redux/action";
@@ -112,6 +112,8 @@ export default function SignUp() {
       referrer: false,
       //  registered: firebase.firestore.FieldValue.serverTimestamp(),
       countrycode: values.countrycode,
+      paymentallowed: 2,
+      image: "https://image.com",
       // currencycode: "",
     };
 

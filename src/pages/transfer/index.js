@@ -50,7 +50,7 @@ const TransferIndex = ({ account }) => {
       <Tabs
         variant="fullWidth"
         value={state.index}
-        fullWidth
+        
         onChange={handleChange}
         style={styles.tabs}
       >

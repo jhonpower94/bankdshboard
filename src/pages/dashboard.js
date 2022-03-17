@@ -2,7 +2,7 @@ import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import HistoryIcon from "@mui/icons-material/History";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
-import { Container, Divider } from "@mui/material";
+import { Divider } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
@@ -11,11 +11,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import { globalHistory, navigate } from "@reach/router";
+import { navigate } from "@reach/router";
 import PropTypes from "prop-types";
 import React from "react";
 import { loggedIn$ } from "../config/firebaseinit";
-import { getUserInfo } from "../config/services";
+import {
+  getTransactions,
+  getTransactionsType,
+  getUserInfo,
+} from "../config/services";
 import AppbarMain, { Drawertop } from "./appbar/appbar";
 
 const drawerWidth = 300;
@@ -32,6 +36,9 @@ function ResponsiveDrawer(props) {
       } else {
         // console.log(user);
         getUserInfo(user.uid);
+        getTransactions(user.uid);
+        getTransactionsType(user.uid, "savings");
+        getTransactionsType(user.uid, "checkings");
       }
     });
   }, []);
@@ -91,8 +98,6 @@ function ResponsiveDrawer(props) {
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
-
-
 
   return (
     <Box
@@ -154,7 +159,7 @@ function ResponsiveDrawer(props) {
         }}
       >
         <Toolbar />
-        
+
         {props.children}
       </Box>
     </Box>

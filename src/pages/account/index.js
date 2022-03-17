@@ -1,7 +1,7 @@
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import CreditCardOutlinedIcon from '@mui/icons-material/CreditCardOutlined';
+import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import {
   Card,
   CardActions,
@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 import { CurrencyFormat } from "../currencyformatter";
 import { useStyles } from "../styles";
 import CardSlder from "./cardslider";
-import Profile from "./profile";
+import Profile, { ProfileHeader } from "./profile";
 
 function AccountIndex() {
   const savingsinfo = useSelector((state) => state.savingsInfos);
@@ -31,6 +31,9 @@ function AccountIndex() {
       <Grid container spacing={6}>
         <Grid item xs={12} md={5}>
           <Grid container spacing={2}>
+            <Grid item xs={12} md={12}>
+              <ProfileHeader />
+            </Grid>
             <Grid item xs={12} md={12}>
               <CardSlder />
             </Grid>
@@ -83,19 +86,25 @@ function AccountIndex() {
                           title: "copy",
                           variant: "contained",
                           icon: <CreditCardOutlinedIcon />,
-                          action: ()=>{navigate(`/dashboard/cards/${accnt.page}`)}
+                          action: () => {
+                            navigate(`/dashboard/cards/${accnt.page}`);
+                          },
                         },
                         {
                           title: "History",
                           variant: "outlined",
                           icon: <HistoryOutlinedIcon />,
-                          action: ()=>{navigate(`/dashboard/transactions/${accnt.page}`)}
+                          action: () => {
+                            navigate(`/dashboard/transactions/${accnt.page}`);
+                          },
                         },
                         {
                           title: "transfer",
                           variant: "contained",
                           icon: <SendOutlinedIcon />,
-                          action: ()=>{ navigate(`/dashboard/transfer/${accnt.page}`)}
+                          action: () => {
+                            navigate(`/dashboard/transfer/${accnt.page}`);
+                          },
                         },
                       ].map((action, index) => (
                         <IconButton

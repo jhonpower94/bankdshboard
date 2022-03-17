@@ -205,6 +205,35 @@ const checkingsInfos = (state = {}, action) => {
   }
 };
 
+const totalTransactions = (state = 0, action) => {
+  const setinfo = action.payload;
+  switch (action.type) {
+    case "TOTALTRANSACTION":
+      return setinfo;
+    default:
+      return state;
+  }
+};
+
+const totalTransactionsType = (
+  state = {
+    savings: [],
+    checkings: [],
+  },
+  action
+) => {
+  const setsavings = { ...state, savings: action.payload };
+  const setchekings = { ...state, checkings: action.payload };
+  switch (action.type) {
+    case "TRNSSAVINGS":
+      return setsavings;
+    case "TRANSCHECKINGS":
+      return setchekings;
+    default:
+      return state;
+  }
+};
+
 const currentLocation = (state = "account", action) => {
   switch (action.type) {
     case "LOCATION":
@@ -233,6 +262,8 @@ export const allreducer = combineReducers({
   useInfos: useInfos,
   savingsInfos: savingsInfos,
   checkingsInfos: checkingsInfos,
+  totalTransactions: totalTransactions,
+  totalTransactionsType: totalTransactionsType,
   currentLocation: currentLocation,
   // pathname: pathname,
 });

@@ -15,6 +15,7 @@ import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
 import Security from "./pages/transfer/securitycode";
 import UsersIndex from "./pages/admin/user/index";
+import SuccessPage from "./pages/successpayment";
 
 const theme = createTheme({
   palette: {
@@ -60,6 +61,7 @@ function App() {
           <TransferIndex path="transfer/:account" />
           <TransactionIndex path="transactions/:account" />
           <SettingsIndex path="settings/:action" />
+          <SuccessPage path="success" />
           <AccessPage path="access" />
           <ManageCards path="cards/:account" />
           <Security path="security" />

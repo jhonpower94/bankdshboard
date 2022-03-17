@@ -13,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { navigate } from "@reach/router";
+import { serverTimestamp } from "firebase/firestore";
 import PropTypes from "prop-types";
 import * as React from "react";
 import NumberFormat from "react-number-format";
@@ -51,16 +52,25 @@ const allBanks = require("../../config/bank.json");
 const countries = require("../../config/country.json");
 
 function TransferMain({ type }) {
+  let today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+  const yyyy = today.getFullYear();
+  const time = today.getHours() + ":" + today.getMinutes();
+
   const [values, setValues] = React.useState({
-    textmask: "(100) 000-0000",
-    numberformat: "",
+    type: type,
+    transaction_type: "Debit",
+    amount: "",
     mode: "local",
-    accountNumber: "",
+    accountnumber: "",
     bankname: "",
     fullname: "",
     swift: "",
     iban: "",
     country: "",
+    date: `${mm}/${dd}/${yyyy} ${time}`,
+    timestamp: serverTimestamp(),
   });
 
   const handleChange = (event) => {
@@ -72,7 +82,7 @@ function TransferMain({ type }) {
 
   const submitForm = (event) => {
     event.preventDefault();
-    navigate("../security");
+    navigate("../security", { state: values });
   };
   return (
     <Container>
@@ -109,14 +119,14 @@ function TransferMain({ type }) {
             <TextField
               required
               label="Amount"
-              value={values.numberformat}
+              value={values.amount}
               onChange={handleChange}
-              name="numberformat"
+              name="amount"
               id="formatted-numberformat-input"
               InputProps={{
                 inputComponent: NumberFormatCustom,
               }}
-              variant="outlined"
+              constiant="outlined"
               fullWidth
             />
           </Grid>
@@ -125,8 +135,9 @@ function TransferMain({ type }) {
               required
               id="outlined-basic"
               label="Account number"
-              name="accountNumber"
-              variant="outlined"
+              name="accountnumber"
+              constiant="outlined"
+              onChange={handleChange}
               fullWidth
             />
           </Grid>
@@ -161,7 +172,8 @@ function TransferMain({ type }) {
                   id="outlined-basic"
                   label="Recievers full name"
                   name="fullname"
-                  variant="outlined"
+                  constiant="outlined"
+                  onChange={handleChange}
                   fullWidth
                 />
               </Grid>
@@ -171,7 +183,8 @@ function TransferMain({ type }) {
                   id="outlined-basic"
                   label="Swift"
                   name="swift"
-                  variant="outlined"
+                  constiant="outlined"
+                  onChange={handleChange}
                   fullWidth
                 />
               </Grid>
@@ -181,7 +194,7 @@ function TransferMain({ type }) {
                   id="outlined-basic"
                   label="IBAN"
                   name="iban"
-                  variant="outlined"
+                  constiant="outlined"
                   fullWidth
                 />
               </Grid>
@@ -213,7 +226,7 @@ function TransferMain({ type }) {
             <Button
               type="submit"
               fullWidth
-              variant="contained"
+              constiant="contained"
               size="large"
               disableElevation
             >

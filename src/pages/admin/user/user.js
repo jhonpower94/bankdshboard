@@ -1,6 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import { Button, CardHeader, Grid } from "@mui/material";
+import { Avatar, Button, CardHeader, Grid, Stack } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import NumberFormat from "react-number-format";
 import {
@@ -8,6 +8,10 @@ import {
   getuserDataBalanceAdmin,
   updateuserDataBalanceAdmin,
 } from "../../../config/services";
+import { DropzoneArea, DropzoneDialog } from "material-ui-dropzone";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
+import { db, storage } from "../../../config/firebaseinit";
 
 const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
   props,
@@ -40,6 +44,11 @@ NumberFormatCustom.propTypes = {
 };
 
 export default function EditUser({ type, id }) {
+  const [state, setState] = React.useState({
+    open: false,
+    files: [],
+  });
+
   const [values, setValues] = React.useState({
     numberformat: "0",
   });
@@ -48,6 +57,7 @@ export default function EditUser({ type, id }) {
     firstName: "",
     lastName: "",
     email: "",
+    image: "http//image.com"
   });
 
   React.useEffect(() => {
@@ -75,12 +85,74 @@ export default function EditUser({ type, id }) {
     updateuserDataBalanceAdmin(id, type, values.numberformat);
   };
 
+  const handleOpen = () => {
+    setState({
+      open: true,
+    });
+  };
+
+  const handleClose = () => {
+    setState({
+      open: false,
+    });
+  };
+
+  const handleSave = (files) => {
+    console.log(files);
+    const storageRef = ref(storage, `images/${files[0].name}`);
+    const uploadTask = uploadBytesResumable(storageRef, files[0]);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+        }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          const userRef = doc(db, "users", id);
+
+          setDoc(userRef, { image: downloadURL }, { merge: true }).then(() => {
+            //Saving files to state for further use and closing Modal.
+            setState({
+              files: files,
+              //  open: false,
+              name: files[0].name,
+            });
+          });
+        });
+      }
+    );
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
         <CardHeader
           title={`${user.firstName} ${user.lastName}`}
           subheader={user.email}
+          avatar={
+            <Avatar
+              sx={{ bgcolor: "#d20000", width: 56, height: 56 }}
+              alt="Remy Sharp"
+              src={user.image}
+            />
+          }
         />
       </Grid>
       <Grid item xs={12} md={4}>
@@ -98,8 +170,26 @@ export default function EditUser({ type, id }) {
           }}
         />
       </Grid>
-
-      <Grid item xs={12} md={3}>
+      <Grid item xs={12} md={12}>
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          disableElevation
+          onClick={handleOpen}
+        >
+          Add Image
+        </Button>
+        <DropzoneDialog
+          open={state.open}
+          onSave={handleSave}
+          acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
+          showPreviews={true}
+          maxFileSize={5000000}
+          onClose={handleClose}
+        />
+      </Grid>
+      <Grid item xs={12} md={12}>
         <Button
           fullWidth
           size="large"
