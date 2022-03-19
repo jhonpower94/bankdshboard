@@ -1,74 +1,33 @@
-import * as React from "react";
-import PropTypes from "prop-types";
-import { Avatar, Button, CardHeader, Grid, Stack } from "@mui/material";
+import { Avatar, Button, CardHeader, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import NumberFormat from "react-number-format";
-import {
-  getuserDataAdmin,
-  getuserDataBalanceAdmin,
-  updateuserDataBalanceAdmin,
-} from "../../../config/services";
-import { DropzoneArea, DropzoneDialog } from "material-ui-dropzone";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { DropzoneDialog } from "material-ui-dropzone";
+import * as React from "react";
 import { db, storage } from "../../../config/firebaseinit";
+import { addUsers, getuserDataAdmin } from "../../../config/services";
 
-const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
-  props,
-  ref
-) {
-  const { onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={ref}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: props.name,
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator
-      isNumericString
-      prefix="$"
-    />
-  );
-});
-
-NumberFormatCustom.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
-
-export default function EditUser({ type, id }) {
+export default function EditUser({ id }) {
   const [state, setState] = React.useState({
     open: false,
     files: [],
   });
 
   const [values, setValues] = React.useState({
-    numberformat: "0",
+    limit: 0,
   });
 
   const [user, setUser] = React.useState({
     firstName: "",
     lastName: "",
     email: "",
-    image: "http//image.com"
+    image: "http//image.com",
+    transactionlimit: 0,
   });
 
   React.useEffect(() => {
-    console.log(id, type);
     getuserDataAdmin(id).subscribe((userData) => {
       setUser(userData);
-      console.log(userData);
-    });
-
-    getuserDataBalanceAdmin(id, type).subscribe((userData) => {
-      setValues({ numberformat: userData.balance });
       console.log(userData);
     });
   }, []);
@@ -82,7 +41,10 @@ export default function EditUser({ type, id }) {
 
   const submit = () => {
     //  console.log({ balance: values.numberformat });
-    updateuserDataBalanceAdmin(id, type, values.numberformat);
+
+    addUsers(id, { transactionlimit: parseInt(values.limit) }).then(() =>
+      alert("transfer limit updated 👍")
+    );
   };
 
   const handleOpen = () => {
@@ -158,16 +120,14 @@ export default function EditUser({ type, id }) {
       <Grid item xs={12} md={4}>
         <TextField
           fullWidth
-          id="outlined-savings"
-          label="Savings balane"
+          type={"number"}
+          id="outlined-limit"
+          label="transaction limit"
           variant="outlined"
-          name="numberformat"
-          value={values.numberformat}
+          name="limit"
+          defaultValue={user.transactionlimit}
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
-          InputProps={{
-            inputComponent: NumberFormatCustom,
-          }}
         />
       </Grid>
       <Grid item xs={12} md={12}>

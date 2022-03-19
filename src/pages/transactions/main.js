@@ -61,7 +61,9 @@ export default function TransactioMain({ data, type }) {
                   <CurrencyFormat amount={row.amount} />
                 </TableCell>
                 <TableCell>{row.date}</TableCell>
-                <TableCell>{row.accountnumber}</TableCell>
+                <TableCell>
+                  {row.fullname === "" ? row.accountnumber : row.fullname}
+                </TableCell>
                 <TableCell>{row.uid}</TableCell>
               </TableRow>
             ))}

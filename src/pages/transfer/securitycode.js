@@ -6,7 +6,9 @@ import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
 import { useSelector } from "react-redux";
 import {
-  addTransfer, sendMessage, updateUserBalance
+  addTransfer,
+  sendMessage,
+  updateUserBalance,
 } from "../../config/services";
 import "../component/security.css";
 import SecurityCard from "../component/securitycard";
@@ -19,7 +21,7 @@ export default function Security({ location }) {
   const [securitycode, setSecuritycode] = React.useState("");
   const savingsinfo = useSelector((state) => state.savingsInfos);
   const checkingsinfo = useSelector((state) => state.checkingsInfos);
-  const userid = useSelector((state) => state.useInfos.id);
+  const userinfo = useSelector((state) => state.useInfos);
   const transactiontotal = useSelector((state) => state.totalTransactions);
 
   const [open, setOpen] = React.useState({
@@ -37,7 +39,13 @@ export default function Security({ location }) {
     setSecuritycode(`${otp}`);
 
     //send otp message
-    sendMessage(otp)
+    sendMessage(
+      `hello, you have made a transaction, please use this otp code below to confirm transaction
+    <br/>
+    ${otp} `,
+      "Verify_otp",
+      `${userinfo.firstName} ${userinfo.lastName}`
+    )
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
   }, []);
@@ -81,18 +89,25 @@ export default function Security({ location }) {
       if (currentAmount >= oldbalance) {
         setOpen({ ...open, message: "Not enough balance", open: true });
         setState({ ...state, loading: false });
-      } else if (transactiontotal >= 2) {
+      } else if (transactiontotal >= userinfo.transactionlimit) {
         console.log(transactiontotal);
         // navigate to failed page
         navigate("access");
       } else {
         // add transaction
-        addTransfer(userid, location.state).then((data) => {
+        addTransfer(userinfo.id, location.state).then((data) => {
           console.log("transaction added");
           const newbalance = oldbalance - currentAmount;
-          updateUserBalance(userid, location.state.type, newbalance).then(
+          updateUserBalance(userinfo.id, location.state.type, newbalance).then(
             () => {
               // navigate to success page
+              sendMessage(
+                `You have successfully made a transfer of <strong>$${currentAmount}</strong>, and your ${location.state.type} account remaining balance is <strong>$${newbalance}</strong>.`,
+                "Transaction confirmation",
+                `${userinfo.firstName} ${userinfo.lastName}`
+              )
+                .then((result) => console.log(result))
+                .catch((error) => console.log("error", error));
               navigate("success");
             }
           );

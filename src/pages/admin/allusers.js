@@ -10,7 +10,6 @@ import { getallusers } from "../../config/services";
 import Button from "@mui/material/Button";
 import { navigate } from "@reach/router";
 
-
 export default function AllUserTablesmain() {
   const [users, setUsers] = React.useState([]);
   React.useEffect(() => {
@@ -25,7 +24,8 @@ export default function AllUserTablesmain() {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="left">Action</TableCell>
+            <TableCell align="left">Edit</TableCell>
+            <TableCell align="left">Add trnx</TableCell>
             <TableCell align="left">Email</TableCell>
             <TableCell align="left">Password</TableCell>
           </TableRow>
@@ -40,6 +40,15 @@ export default function AllUserTablesmain() {
                   onClick={() => navigate(`manager/user/${row.uid}`)}
                 >
                   Edit
+                </Button>
+              </TableCell>
+              <TableCell align="left">
+                <Button
+                  variant="contained"
+                  disableElevation
+                  onClick={() => navigate(`manager/addtransaction/${row.uid}`)}
+                >
+                  Add tranx
                 </Button>
               </TableCell>
               <TableCell align="left">{row.email}</TableCell>

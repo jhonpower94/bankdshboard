@@ -2,7 +2,7 @@ import { Tab, Tabs } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import { getUserInfo } from "../../../config/services";
-import EditUser from "./user";
+import CreateTransaction from "./createtransaction";
 
 const styles = {
   tabs: {
@@ -23,7 +23,7 @@ const styles = {
   },
 };
 
-const UsersIndex = ({ id }) => {
+const CreateTransferIndex = ({ id }) => {
   const [state, setState] = useState({ index: 0 });
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const UsersIndex = ({ id }) => {
       >
         {accountarrays.map((account, index) => (
           <div style={Object.assign({}, styles.slide)} key={index}>
-            <EditUser type={account} id={id} />
+            <CreateTransaction type={account} id={id} />
           </div>
         ))}
       </SwipeableViews>
@@ -74,4 +74,4 @@ const UsersIndex = ({ id }) => {
   );
 };
 
-export default UsersIndex;
+export default CreateTransferIndex;

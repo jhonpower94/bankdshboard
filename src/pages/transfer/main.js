@@ -181,14 +181,14 @@ function TransferMain({ type }) {
                 <TextField
                   required
                   id="outlined-basic"
-                  label="Swift"
+                  label="Swift / ABA routing number"
                   name="swift"
                   constiant="outlined"
                   onChange={handleChange}
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={5}>
                 <TextField
                   required
                   id="outlined-basic"
@@ -198,7 +198,17 @@ function TransferMain({ type }) {
                   fullWidth
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
+                <TextField
+                  required
+                  id="outlined-basic"
+                  label="Recievers bank name"
+                  name="bankname"
+                  constiant="outlined"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
                     Recievers country
@@ -222,6 +232,16 @@ function TransferMain({ type }) {
               </Grid>
             </React.Fragment>
           )}
+          <Grid item xs={12} md={12}>
+            <TextField
+              id="outlined-multiline-static"
+              label="Transfer description"
+              multiline
+              rows={2}
+              defaultValue=""
+              fullWidth
+            />
+          </Grid>
           <Grid item xs={12} md={12}>
             <Button
               type="submit"

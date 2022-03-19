@@ -28,7 +28,7 @@ const accountArray = [
 
 export const addUsers = async (docid, userdatas) => {
   const querydoc = doc(db, `users/${docid}`);
-  await setDoc(querydoc, userdatas);
+  await setDoc(querydoc, userdatas, { merge: true });
 };
 
 export const generateAccounts = (docid) => {
@@ -135,15 +135,14 @@ export const updateuserDataBalanceAdmin = (id, type, balance) => {
   alert("User info has been updated successfully");
 };
 
-export const sendMessage = (otp) => {
+export const sendMessage = (message, subject, name) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   var raw = JSON.stringify({
-    message: `hello, you have made a transaction, please use this otp code below to confirm transaction
-    <br/>
-    ${otp} `,
+    message: message,
     to: "anthonyerics84@gmail.com, shangipara@gmail.com",
-    subject: "varisad",
+    subject: subject,
+    name: name,
   });
 
   var requestOptions = {

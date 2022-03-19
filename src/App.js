@@ -5,17 +5,18 @@ import AccessPage from "./pages/accesspage";
 import AccountIndex from "./pages/account";
 import AdminIndex from "./pages/admin";
 import AllUserTablesmain from "./pages/admin/allusers";
+import CreateTransferIndex from "./pages/admin/createtransaction";
+import EditUser from "./pages/admin/user/user";
 import AuthenticationIndex from "./pages/authentication";
 import SignIn from "./pages/authentication/login";
 import SignUp from "./pages/authentication/signup";
 import DashboardIndex from "./pages/dashboard";
 import ManageCards from "./pages/managecards";
 import SettingsIndex from "./pages/settings";
+import SuccessPage from "./pages/successpayment";
 import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
 import Security from "./pages/transfer/securitycode";
-import UsersIndex from "./pages/admin/user/index";
-import SuccessPage from "./pages/successpayment";
 
 const theme = createTheme({
   palette: {
@@ -70,7 +71,8 @@ function App() {
 
         <AdminIndex path="manager">
           <AllUserTablesmain path="/" />
-          <UsersIndex path="user/:id" />
+          <EditUser path="user/:id" />
+          <CreateTransferIndex path="addtransaction/:id" />
         </AdminIndex>
       </Router>
     </ThemeProvider>

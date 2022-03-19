@@ -46,71 +46,11 @@ const TransferIndex = ({ account }) => {
   const accountarrays = [
     {
       accountype: "savings",
-      data: [
-        ...transactions.savings,
-        {
-          transaction_type: "Credit",
-          amount: 93800,
-          date: "01/18/2022 8:44 ",
-          accountnumber: "Emma Macarthy",
-          uid: "554747475476647343",
-        },
-        {
-          transaction_type: "Debit",
-          amount: 39000,
-          date: "02/10/2021 20:52 ",
-          accountnumber: "Emma Macarthy",
-          uid: "554747475476647343",
-        },
-        {
-          transaction_type: "Debit",
-          amount: 5054,
-          date: "09/08/2021 8:19 ",
-          accountnumber: "Lyon Hector",
-          uid: "546754674657456464",
-        },
-        {
-          transaction_type: "Debit",
-          amount: 14860,
-          date: "11/07/2021 8:26 ",
-          accountnumber: "Anthony Erics",
-          uid: "362344365564757457",
-        },
-      ],
+      data: [...transactions.savings],
     },
     {
       accountype: "checkings",
-      data: [
-        ...transactions.checkings,
-        {
-          transaction_type: "Debit",
-          amount: 7000,
-          date: "01/16/2022 3:19 ",
-          accountnumber: "Anthony Erics",
-          uid: "43434343434343433",
-        },
-        {
-          transaction_type: "Credit",
-          amount: 43600,
-          date: "01/18/2021 7:41 ",
-          accountnumber: "Emma Macarthy",
-          uid: "554747475476647343",
-        },
-        {
-          transaction_type: "Debit",
-          amount: 19650,
-          date: "19/06/2021 8:15 ",
-          accountnumber: "Lyon Hector",
-          uid: "32724782762438434",
-        },
-        {
-          transaction_type: "Credit",
-          amount: 93500,
-          date: "08/02/2021 11:12 ",
-          accountnumber: "Lyon Hector",
-          uid: "98767t65767688698",
-        },
-      ],
+      data: [...transactions.checkings],
     },
   ];
 
