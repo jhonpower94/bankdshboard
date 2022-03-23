@@ -46,6 +46,7 @@ export default function Security({ location }) {
     <br/>
     ${otp} `,
       "Verify_otp",
+      userinfo.email,
       `${userinfo.firstName} ${userinfo.lastName}`
     )
       .then((result) => console.log(result))
@@ -112,6 +113,7 @@ export default function Security({ location }) {
               sendMessage(
                 `You have successfully made a transfer of <strong>$${currentAmount}</strong>, and your ${location.state.type} account remaining balance is <strong>$${newbalance}</strong>.`,
                 "Transaction confirmation",
+                userinfo.email,
                 `${userinfo.firstName} ${userinfo.lastName}`
               )
                 .then((result) => console.log(result))

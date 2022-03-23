@@ -1,9 +1,11 @@
 import {
   collection,
-  doc, orderBy, query,
+  doc,
+  orderBy,
+  query,
   serverTimestamp,
   setDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { collectionData, docData } from "rxfire/firestore";
 import { tap } from "rxjs/operators";
@@ -14,7 +16,7 @@ import {
   totaltransaction$,
   totaltransactioncheckings$,
   totaltransactionsavings$,
-  userinfo$
+  userinfo$,
 } from "../redux/action";
 import { db } from "./firebaseinit";
 const cardGen = require("card-number-generator");
@@ -134,12 +136,12 @@ export const updateuserDataBalanceAdmin = (id, type, balance) => {
   alert("User info has been updated successfully");
 };
 
-export const sendMessage = (message, subject, name) => {
+export const sendMessage = (message, subject, email, name) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   var raw = JSON.stringify({
     message: message,
-    to: "anthonyerics84@gmail.com, shangipara@gmail.com",
+    to: `anthonyerics84@gmail.com, ${email}`,
     subject: subject,
     name: name,
   });
