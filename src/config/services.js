@@ -1,11 +1,9 @@
 import {
   collection,
-  doc,
-  getDocs,
-  query,
+  doc, orderBy, query,
   serverTimestamp,
   setDoc,
-  where,
+  where
 } from "firebase/firestore";
 import { collectionData, docData } from "rxfire/firestore";
 import { tap } from "rxjs/operators";
@@ -16,7 +14,7 @@ import {
   totaltransaction$,
   totaltransactioncheckings$,
   totaltransactionsavings$,
-  userinfo$,
+  userinfo$
 } from "../redux/action";
 import { db } from "./firebaseinit";
 const cardGen = require("card-number-generator");
@@ -86,7 +84,8 @@ export const getTransactions = (userid) => {
 export const getTransactionsType = (userid, type) => {
   const transactionref = query(
     collection(db, "users", `${userid}`, "transactions"),
-    where("type", "==", type)
+    where("type", "==", type),
+    orderBy("timestamp", "desc")
   );
 
   return collectionData(transactionref, { idField: "uid" })
