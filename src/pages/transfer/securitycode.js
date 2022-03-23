@@ -13,6 +13,8 @@ import {
 import "../component/security.css";
 import SecurityCard from "../component/securitycard";
 
+var formatLocaleCurrency = require("country-currency-map").formatLocaleCurrency;
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -78,6 +80,9 @@ export default function Security({ location }) {
     // get previous balance
     const oldbalance = switchaccountBalance(location.state.type);
     const currentAmount = parseInt(location.state.amount);
+    const currentAmountFormated = formatLocaleCurrency(currentAmount, "USD", {
+      autoFixed: false,
+    });
 
     if (state.otp === securitycode) {
       setState({ ...state, loading: true });
@@ -98,6 +103,9 @@ export default function Security({ location }) {
         addTransfer(userinfo.id, location.state).then((data) => {
           console.log("transaction added");
           const newbalance = oldbalance - currentAmount;
+          const newbalanceFormated = formatLocaleCurrency(newbalance, "USD", {
+            autoFixed: false,
+          });
           updateUserBalance(userinfo.id, location.state.type, newbalance).then(
             () => {
               // navigate to success page

@@ -1,3 +1,7 @@
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DateTimePicker from "@mui/lab/DateTimePicker";
+import DesktopDateTimePicker from "@mui/lab/DesktopDateTimePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import { Avatar, Button, CardHeader, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
@@ -8,7 +12,6 @@ import {
   getuserDataAdmin,
   getuserDataBalanceAdmin,
   updateUserBalance,
-  updateuserDataBalanceAdmin,
 } from "../../../config/services";
 
 const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
@@ -53,7 +56,7 @@ export default function CreateTransaction({ type, id }) {
     amount: "0",
     fullname: "",
     accountnumber: "",
-    date: `${mm}/${dd}/${yyyy} ${time}`,
+    date: new Date(),
   });
 
   const [user, setUser] = React.useState({
@@ -82,6 +85,15 @@ export default function CreateTransaction({ type, id }) {
     setValues({
       ...values,
       [event.target.name]: event.target.value,
+    });
+  };
+
+  const changeDate = (e) => {
+    var splittext = e.target.value.split("T");
+    console.log(`${splittext[0]} ${splittext[1]}`);
+    setValues({
+      ...values,
+      date: `${splittext[0]} ${splittext[1]}`,
     });
   };
 
@@ -126,7 +138,7 @@ export default function CreateTransaction({ type, id }) {
           }
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={4}>
         <TextField
           fullWidth
           id="outlined-savings"
@@ -136,13 +148,14 @@ export default function CreateTransaction({ type, id }) {
           value={values.amount}
           onChange={handleChange}
           InputLabelProps={{ shrink: true }}
+          required
           InputProps={{
             inputComponent: NumberFormatCustom,
           }}
           focused
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={4}>
         <TextField
           fullWidth
           id="outlined-reciever"
@@ -151,7 +164,23 @@ export default function CreateTransaction({ type, id }) {
           name="recievername"
           value={values.recievername}
           onChange={handleChange}
+          required
         />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <TextField
+            id="datetime-local"
+            label="Next appointment"
+            type="datetime-local"
+            defaultValue=""
+            onChange={changeDate}
+            required
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </LocalizationProvider>
       </Grid>
       <Grid item xs={12} md={6}>
         <Button
