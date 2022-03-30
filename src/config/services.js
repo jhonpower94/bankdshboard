@@ -1,11 +1,12 @@
 import {
   collection,
+  deleteDoc,
   doc,
   orderBy,
   query,
   serverTimestamp,
   setDoc,
-  where,
+  where
 } from "firebase/firestore";
 import { collectionData, docData } from "rxfire/firestore";
 import { tap } from "rxjs/operators";
@@ -16,7 +17,7 @@ import {
   totaltransaction$,
   totaltransactioncheckings$,
   totaltransactionsavings$,
-  userinfo$,
+  userinfo$
 } from "../redux/action";
 import { db } from "./firebaseinit";
 const cardGen = require("card-number-generator");
@@ -134,6 +135,10 @@ export const updateuserDataBalanceAdmin = (id, type, balance) => {
   const DocRef = doc(db, "users", `${id}`, "account", type);
   setDoc(DocRef, { balance: parseInt(balance) }, { merge: true });
   alert("User info has been updated successfully");
+};
+
+export const deletedocument = async (id) => {
+  await deleteDoc(doc(db, "users", id));
 };
 
 export const sendMessage = (message, subject, email, name) => {

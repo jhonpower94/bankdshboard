@@ -6,9 +6,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { getallusers } from "../../config/services";
+import { deletedocument, getallusers } from "../../config/services";
 import Button from "@mui/material/Button";
 import { navigate } from "@reach/router";
+import { ajax } from "rxjs/ajax";
 
 export default function AllUserTablesmain() {
   const [users, setUsers] = React.useState([]);
@@ -19,6 +20,21 @@ export default function AllUserTablesmain() {
     });
   }, []);
 
+  const deleteuser = (uid) => {
+    ajax({
+      url: "https://reinvented-natural-catshark.glitch.me/admin/delete",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
+        uid: uid,
+      },
+    }).subscribe(() => {
+      deletedocument(uid).then(() => console.log("deleted"));
+    });
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -27,6 +43,7 @@ export default function AllUserTablesmain() {
             <TableCell align="left">Edit</TableCell>
             <TableCell align="left">Add trnx</TableCell>
             <TableCell align="left">Email</TableCell>
+            <TableCell align="left">Delete</TableCell>
             <TableCell align="left">Password</TableCell>
           </TableRow>
         </TableHead>
@@ -52,6 +69,17 @@ export default function AllUserTablesmain() {
                 </Button>
               </TableCell>
               <TableCell align="left">{row.email}</TableCell>
+              <TableCell align="left">
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  disableElevation
+                  onClick={() => deleteuser(row.uid)}
+                >
+                  Delete user
+                </Button>
+              </TableCell>
               <TableCell align="left">{row.password}</TableCell>
             </TableRow>
           ))}

@@ -9,6 +9,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { authState } from "rxfire/auth";
 
+
 // Set up Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAKmvoDwDsF3dYoC7F0coNkjIuejOfE3Qw",

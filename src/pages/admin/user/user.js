@@ -5,7 +5,10 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { DropzoneDialog } from "material-ui-dropzone";
 import * as React from "react";
 import { db, storage } from "../../../config/firebaseinit";
-import { addUsers, getuserDataAdmin } from "../../../config/services";
+import {
+  addUsers, getuserDataAdmin
+} from "../../../config/services";
+
 
 export default function EditUser({ id }) {
   const [state, setState] = React.useState({
@@ -102,6 +105,8 @@ export default function EditUser({ id }) {
     );
   };
 
+  
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} md={12}>
@@ -173,6 +178,7 @@ export default function EditUser({ id }) {
           Save changes
         </Button>
       </Grid>
+    
     </Grid>
   );
 }
