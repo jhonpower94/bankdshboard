@@ -12,13 +12,14 @@ import { authState } from "rxfire/auth";
 
 // Set up Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAKmvoDwDsF3dYoC7F0coNkjIuejOfE3Qw",
-  authDomain: "stantrustbank.firebaseapp.com",
-  projectId: "stantrustbank",
-  storageBucket: "stantrustbank.appspot.com",
-  messagingSenderId: "620878192642",
-  appId: "1:620878192642:web:1887ac64b1d4039209c71b"
+  apiKey: "AIzaSyDSGiQFCu8p0aYT9SVI6e9eHxLotJVELHY",
+  authDomain: "tdbank-ea163.firebaseapp.com",
+  projectId: "tdbank-ea163",
+  storageBucket: "tdbank-ea163.appspot.com",
+  messagingSenderId: "754698281741",
+  appId: "1:754698281741:web:e6883fb78bc77d990bc644"
 };
+
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth();

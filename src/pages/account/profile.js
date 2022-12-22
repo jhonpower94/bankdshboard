@@ -60,7 +60,7 @@ export const ProfileHeader = () => {
       <CardHeader
         avatar={
           <Avatar
-            sx={{ bgcolor: "#d20000", width: 56, height: 56 }}
+            sx={{ bgcolor: "#073407", width: 56, height: 56 }}
             alt="Remy Sharp"
             src={userinfo.image}
           />

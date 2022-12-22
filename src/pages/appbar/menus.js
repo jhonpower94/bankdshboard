@@ -1,10 +1,10 @@
 import AccountCircle from "@mui/icons-material/AccountCircle";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import NotificationsOutlined from "@mui/icons-material/NotificationsOutlined";
 import PasswordIcon from "@mui/icons-material/Password";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import {
   Badge,
   Button,
@@ -16,15 +16,15 @@ import {
   Menu,
   MenuItem,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
+import { navigate } from "@reach/router";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useStyles } from "../styles";
-import { clearnotification$, loading$ } from "../../redux/action";
-import { navigate } from "@reach/router";
 import { auth, signOut } from "../../config/firebaseinit";
+import { clearnotification$ } from "../../redux/action";
+import { useStyles } from "../styles";
 
 const StyledMenu = styled((props) => (
   <Menu

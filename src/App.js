@@ -21,7 +21,7 @@ import Security from "./pages/transfer/securitycode";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#d20000",
+      main: "#073407",
     },
     secondary: {
       main: blue[600],
@@ -30,6 +30,9 @@ const theme = createTheme({
   typography: {
     body2: {
       fontSize: 18,
+    },
+    h4: {
+      fontWeight: 2000,
     },
   },
   components: {

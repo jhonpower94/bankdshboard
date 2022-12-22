@@ -18,7 +18,7 @@ const styles = {
     margin: 3,
   },
   active: {
-    backgroundColor: "#d20000",
+    backgroundColor: "#073407",
   },
 };
 

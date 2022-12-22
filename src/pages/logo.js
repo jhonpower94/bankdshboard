@@ -16,7 +16,7 @@ function Logo() {
   return (
     <div className={classes.avatar}>
       <img
-        src={logo}
+        src={require("../images/tdb-white-en.png")}
         height={
           useMediaQuery(useTheme().breakpoints.up("sm")) ? "80px" : "80px"
         }

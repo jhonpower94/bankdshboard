@@ -42,7 +42,7 @@ export default function AppbarMain({ handleDrawer }) {
         >
           <MenuIconCustom />
         </IconButton>
-        <img src={logo} height={40} alt="Enrichement FCU" />
+        <img src={require("../../images/tdb-white-en.png")} height={40} alt="Enrichement FCU" />
         <Box sx={{ flexGrow: 1 }} />
         <Menus />
       </Toolbar>

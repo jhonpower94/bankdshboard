@@ -75,7 +75,7 @@ function AccountIndex() {
                     subheader={`Account number: ${accnt.account_number}`}
                   />
                   <CardContent>
-                    <Typography variant="h5">
+                    <Typography variant="h4">
                       <CurrencyFormat amount={accnt.balance} />
                     </Typography>
                   </CardContent>

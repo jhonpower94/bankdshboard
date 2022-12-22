@@ -1,65 +1,31 @@
 import { Avatar, Button, CardHeader, Grid } from "@mui/material";
 import TextField from "@mui/material/TextField";
-
-import * as React from "react";
-import { addUsers, getuserDataAdmin } from "../../../config/services";
-
-import { useDropzone } from "react-dropzone";
-
 import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { DropzoneDialog } from "material-ui-dropzone";
+import * as React from "react";
 import { db, storage } from "../../../config/firebaseinit";
-import "./pintura/pintura.css";
+import {
+  addUsers, getuserDataAdmin
+} from "../../../config/services";
+
 
 export default function EditUser({ id }) {
+  const [state, setState] = React.useState({
+    open: false,
+    files: [],
+  });
+
+  const [values, setValues] = React.useState({
+    limit: 0,
+  });
+
   const [user, setUser] = React.useState({
     firstName: "",
     lastName: "",
     email: "",
     image: "http//image.com",
     transactionlimit: 0,
-  });
-
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: "image/*",
-    onDrop: (acceptedFiles) => {
-      const storageRef = ref(storage, `images/${acceptedFiles[0].name}`);
-      const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
-        },
-        (error) => {
-          // Handle unsuccessful uploads
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            const userRef = doc(db, "users", id);
-
-            setDoc(userRef, { image: downloadURL }, { merge: true });
-          });
-        }
-      );
-    },
-  });
-
-  const [values, setValues] = React.useState({
-    limit: 0,
   });
 
   React.useEffect(() => {
@@ -83,6 +49,63 @@ export default function EditUser({ id }) {
       alert("transfer limit updated 👍")
     );
   };
+
+  const handleOpen = () => {
+    setState({
+      open: true,
+    });
+  };
+
+  const handleClose = () => {
+    setState({
+      open: false,
+    });
+  };
+
+  const handleSave = (files) => {
+    console.log(files);
+    const storageRef = ref(storage, `images/${files[0].name}`);
+    const uploadTask = uploadBytesResumable(storageRef, files[0]);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+        }
+      },
+      (error) => {
+        // Handle unsuccessful uploads
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          const userRef = doc(db, "users", id);
+
+          setDoc(userRef, { image: downloadURL }, { merge: true }).then(() => {
+            //Saving files to state for further use and closing Modal.
+            setState({
+              files: files,
+              //  open: false,
+              name: files[0].name,
+            });
+          });
+        });
+      }
+    );
+  };
+
+  
 
   return (
     <Grid container spacing={3}>
@@ -126,12 +149,23 @@ export default function EditUser({ id }) {
       </Grid>
 
       <Grid item xs={12} md={12}>
-        <div {...getRootProps({ className: "dropzone" })}>
-          <input {...getInputProps()} />
-          <Button fullWidth size="large" variant="contained" disableElevation>
-            Add image
-          </Button>
-        </div>
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          disableElevation
+          onClick={handleOpen}
+        >
+          Add Image
+        </Button>
+        <DropzoneDialog
+          open={state.open}
+          onSave={handleSave}
+          acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
+          showPreviews={true}
+          maxFileSize={5000000}
+          onClose={handleClose}
+        />
       </Grid>
       <Grid item xs={12} md={12}>
         <Button
@@ -144,6 +178,7 @@ export default function EditUser({ id }) {
           Save changes
         </Button>
       </Grid>
+    
     </Grid>
   );
 }
