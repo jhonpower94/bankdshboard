@@ -56,7 +56,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <AuthenticationIndex path="/">
-          <SignIn path="/" />
+          <SignIn default />
           <SignIn path="admin/:pathtonavigate" />
           <SignUp path="signup" />
         </AuthenticationIndex>
