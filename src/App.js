@@ -17,6 +17,7 @@ import SuccessPage from "./pages/successpayment";
 import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
 import Security from "./pages/transfer/securitycode";
+import Redir from "./redirect";
 
 const theme = createTheme({
   palette: {
@@ -56,7 +57,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <AuthenticationIndex path="/">
-          <SignIn default />
+          <Redir default />
+          <SignIn path="/" />
           <SignIn path="admin/:pathtonavigate" />
           <SignUp path="signup" />
         </AuthenticationIndex>
