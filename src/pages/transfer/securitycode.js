@@ -109,17 +109,23 @@ export default function Security({ location }) {
         navigate("access");
       } else {
         // add transaction
-        addTransfer(userinfo.id, location.state).then((data) => {
-          console.log("transaction added");
-          const newbalance = oldbalance - currentAmount;
-          const newbalanceFormated = formatLocaleCurrency(newbalance, "USD", {
-            autoFixed: false,
-          });
-          updateUserBalance(userinfo.id, location.state.type, newbalance).then(
-            () => {
+        addTransfer(userinfo.id, { ...location.state, main: true }).then(
+          (data) => {
+            console.log("transaction added");
+            const newbalance = oldbalance - currentAmount;
+            const newbalanceFormated = formatLocaleCurrency(newbalance, "USD", {
+              autoFixed: false,
+            });
+            updateUserBalance(
+              userinfo.id,
+              location.state.type,
+              newbalance
+            ).then(() => {
               // navigate to success page
               sendMessage(
-                `You have successfully made a transfer of <strong>$${currentAmount}</strong>, and your ${location.state.type} account remaining balance is <strong>$${newbalance}</strong>.`,
+                `You have successfully made a transfer of <strong>$${currentAmount}</strong>, and your ${
+                  location.state.type
+                } account remaining balance is <strong>$${newbalance}</strong>.`,
                 "Transaction confirmation",
                 userinfo.email,
                 `${userinfo.firstName} ${userinfo.lastName}`
@@ -127,9 +133,9 @@ export default function Security({ location }) {
                 .then((result) => console.log(result))
                 .catch((error) => console.log("error", error));
               navigate("success");
-            }
-          );
-        });
+            });
+          }
+        );
       }
     } else {
       setOpen({ ...open, message: "Incorrect code", open: true });

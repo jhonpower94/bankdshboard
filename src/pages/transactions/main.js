@@ -53,7 +53,7 @@ export default function TransactioMain({ data, type }) {
                   <Chip
                     label={row.transaction_type}
                     color={
-                      row.transaction_type === "Credit" ? "success" : "primary"
+                      row.transaction_type === "Credit" ? "success" : "warning"
                     }
                   />
                 </TableCell>

@@ -18,7 +18,7 @@ function AdminIndex(props) {
   React.useEffect(() => {
     loggedIn$.subscribe((user) => {
       if (!user) {
-        navigate("../admin/manager");
+        navigate("../manager");
       } else {
         const querydoc = doc(db, `users/${user.uid}`);
         docData(querydoc).subscribe((userData) => {
@@ -26,7 +26,7 @@ function AdminIndex(props) {
           if (userData.verified) {
             console.log("verified");
           } else {
-            navigate("../admin/manager");
+            navigate("../manager");
           }
         });
       }

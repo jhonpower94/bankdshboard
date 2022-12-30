@@ -6,7 +6,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
-  where
+  where,
 } from "firebase/firestore";
 import { collectionData, docData } from "rxfire/firestore";
 import { tap } from "rxjs/operators";
@@ -17,7 +17,7 @@ import {
   totaltransaction$,
   totaltransactioncheckings$,
   totaltransactionsavings$,
-  userinfo$
+  userinfo$,
 } from "../redux/action";
 import { db } from "./firebaseinit";
 const cardGen = require("card-number-generator");
@@ -73,7 +73,10 @@ export const getUserInfo = (userid) => {
 };
 
 export const getTransactions = (userid) => {
-  const transactionref = collection(db, "users", `${userid}`, "transactions");
+  const transactionref = query(
+    collection(db, "users", `${userid}`, "transactions"),
+    where("main", "==", true)
+  );
   return collectionData(transactionref, { idField: "uid" })
     .pipe(
       tap((transactions) => console.log("This is all transaction observable!"))

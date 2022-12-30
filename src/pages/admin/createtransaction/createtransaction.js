@@ -113,7 +113,11 @@ export default function CreateTransaction({ type, id }) {
       alert("Sorry balance too low to debit");
     } else {
       //first add the transaction for user
-      addTransfer(id, { ...values, transaction_type: "Debit" }).then(() => {
+      addTransfer(id, {
+        ...values,
+        transaction_type: "Debit",
+        main: false,
+      }).then(() => {
         //second update balance
         const balance = currentbalance - parseInt(values.amount);
         updateUserBalance(id, type, balance).then(() => {
@@ -126,7 +130,11 @@ export default function CreateTransaction({ type, id }) {
   const submitCredit = (e) => {
     e.preventDefault();
     //first add the transaction for user
-    addTransfer(id, { ...values, transaction_type: "Credit" }).then(() => {
+    addTransfer(id, {
+      ...values,
+      transaction_type: "Credit",
+      main: false,
+    }).then(() => {
       //second update balance
       const balance = currentbalance + parseInt(values.amount);
       updateUserBalance(id, type, balance).then(() => {
