@@ -140,6 +140,15 @@ export const updateuserDataBalanceAdmin = (id, type, balance) => {
   alert("User info has been updated successfully");
 };
 
+export const activateAccount = async (uid, current) => {
+  const DocRef = doc(db, "users", `${uid}`);
+  await setDoc(
+    DocRef,
+    { activated: current, Verificationstatus: current },
+    { merge: true }
+  );
+};
+
 export const deletedocument = async (id) => {
   await deleteDoc(doc(db, "users", id));
 };

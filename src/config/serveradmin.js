@@ -1,15 +1,6 @@
 import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  where,
+  doc, setDoc
 } from "firebase/firestore";
-import { collectionData, docData } from "rxfire/firestore";
-import { tap } from "rxjs/operators";
-import { store } from "../";
 
 import { db } from "./firebaseinit";
 

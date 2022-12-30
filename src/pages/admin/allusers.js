@@ -1,17 +1,23 @@
-import * as React from "react";
+import { LoadingButton } from "@mui/lab";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { deletedocument, getallusers } from "../../config/services";
-import Button from "@mui/material/Button";
 import { navigate } from "@reach/router";
+import * as React from "react";
 import { ajax } from "rxjs/ajax";
+import {
+  activateAccount,
+  deletedocument,
+  getallusers
+} from "../../config/services";
 
 export default function AllUserTablesmain() {
+  const [loading, setLoading] = React.useState(false);
   const [users, setUsers] = React.useState([]);
   React.useEffect(() => {
     getallusers().subscribe((users) => {
@@ -43,6 +49,7 @@ export default function AllUserTablesmain() {
             <TableCell align="left">Edit</TableCell>
             <TableCell align="left">Add trnx</TableCell>
             <TableCell align="left">Email</TableCell>
+            <TableCell align="left">Action</TableCell>
             <TableCell align="left">Delete</TableCell>
             <TableCell align="left">Password</TableCell>
           </TableRow>
@@ -69,6 +76,23 @@ export default function AllUserTablesmain() {
                 </Button>
               </TableCell>
               <TableCell align="left">{row.email}</TableCell>
+              <TableCell align="left">
+                <LoadingButton
+                  loading={loading}
+                  variant="contained"
+                  disableElevation
+                  color={row.activated ? "success" : "error"}
+                  onClick={() => {
+                    setLoading(true);
+                    var status = row.activated ? false : true;
+                    activateAccount(row.uid, status).then(() => {
+                      setLoading(false);
+                    });
+                  }}
+                >
+                  {row.activated ? "Deactivate" : "Activate"}
+                </LoadingButton>
+              </TableCell>
               <TableCell align="left">
                 <Button
                   fullWidth

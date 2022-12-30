@@ -114,6 +114,8 @@ export default function SignUp() {
       countrycode: values.countrycode,
       paymentallowed: 2,
       image: "https://image.com",
+      activated: false,
+      Verificationstatus: false,
       // currencycode: "",
     };
 

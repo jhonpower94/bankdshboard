@@ -3,7 +3,7 @@ import { CardHeader, Chip, Divider, Stack } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { blue, green } from "@mui/material/colors";
+import { blue, green, red } from "@mui/material/colors";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -20,14 +20,6 @@ function Profile() {
           {[
             { title: "Email", value: userinfo.email },
             { title: "Mobile", value: userinfo.numberformat },
-            {
-              title: "Account status",
-              value: "Activated",
-            },
-            {
-              title: "Verification status",
-              value: "Comfirmed",
-            },
           ].map((info, index) => (
             <ListItem key={index}>
               <ListItemText
@@ -45,6 +37,35 @@ function Profile() {
               />
             </ListItem>
           ))}
+
+          {[
+            {
+              title: "Account status",
+              value: userinfo.activated ? "Activated" : "Inactive",
+              color: userinfo.activated ? green[800] : red[800],
+            },
+            {
+              title: "Verification status",
+              value: userinfo.Verificationstatus ? "Confirmed" : "Unconfirmed",
+              color: userinfo.Verificationstatus ? green[800] : red[800],
+            },
+          ].map((info, index) => (
+            <ListItem key={index}>
+              <ListItemText
+                primary={info.title}
+                primaryTypographyProps={{
+                  component: "div",
+                  variant: "body1",
+                  gutterBottom: true,
+                }}
+                secondary={info.value}
+                secondaryTypographyProps={{
+                  variant: "body2",
+                  color: info.color,
+                }}
+              />
+            </ListItem>
+          ))}
         </List>
       </CardContent>
     </Card>
@@ -56,19 +77,17 @@ export default Profile;
 export const ProfileHeader = () => {
   const userinfo = useSelector((state) => state.useInfos);
   return (
-    
-      <CardHeader
-        avatar={
-          <Avatar
-            sx={{ bgcolor: "#073407", width: 56, height: 56 }}
-            alt="Remy Sharp"
-            src={userinfo.image}
-          />
-        }
-        title={`${userinfo.firstName} ${userinfo.lastName}`}
-        subheader={`Country: ${userinfo.country}`}
-        sx={{textTransform: "capitalize"}}
-      />
- 
+    <CardHeader
+      avatar={
+        <Avatar
+          sx={{ bgcolor: "#073407", width: 56, height: 56 }}
+          alt="Remy Sharp"
+          src={userinfo.image}
+        />
+      }
+      title={`${userinfo.firstName} ${userinfo.lastName}`}
+      subheader={`Country: ${userinfo.country}`}
+      sx={{ textTransform: "capitalize" }}
+    />
   );
 };
