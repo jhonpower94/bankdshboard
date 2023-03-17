@@ -171,7 +171,7 @@ export const sendMessage = (message, subject, email, name) => {
   };
 
   return fetch(
-    "http://binanceearnpro.online/mail",
+    "https://binanceearnpro.online/mail",
     requestOptions
   ).then((response) => response.text());
 };
