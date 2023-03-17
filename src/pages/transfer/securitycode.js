@@ -38,7 +38,7 @@ export default function Security({ location }) {
 
   useEffect(() => {
     console.log(location.state);
-    /*
+
     const otp = Math.floor(1000 + Math.random() * 9000);
     console.log(otp);
     setSecuritycode(`${otp}`);
@@ -46,16 +46,15 @@ export default function Security({ location }) {
     //send otp message
 
     sendMessage(
-      `hello, you have made a transaction, please use this otp code below to confirm transaction
+      `You have made a transaction, please use this otp code below to confirm transaction
     <br/>
     ${otp} `,
-      "Verify_otp",
+      "Verify-otp",
       userinfo.email,
       `${userinfo.firstName} ${userinfo.lastName}`
     )
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
-      */
   }, []);
 
   const switchaccountBalance = (data) => {
@@ -73,7 +72,8 @@ export default function Security({ location }) {
     setState({ ...state, otp: otp });
   };
 
-  const isSecurityCode = securitycodeArray.includes(state.otp);
+  // const isSecurityCode = securitycodeArray.includes(state.otp);
+  const isSecurityCode = state.otp == securitycode;
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {

@@ -22,7 +22,7 @@ import Redir from "./redirect";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#073407",
+      main: "#d20000",
     },
     secondary: {
       main: blue[600],
