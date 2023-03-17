@@ -1,7 +1,8 @@
 {
   "projects": {
     "default": "scrapedsite",
-    "td": "tdbank-ea163"
+    "td": "tdbank-ea163",
+    "stant": "stantrustbank"
   },
   "targets": {
     "scrapedsite": {
@@ -18,6 +19,13 @@
       "hosting": {
         "td": [
           "tdbankaccount"
+        ]
+      }
+    },
+    "stantrustbank": {
+      "hosting": {
+        "stannew": [
+          "stantrustdashboard"
         ]
       }
     }

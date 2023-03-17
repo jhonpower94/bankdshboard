@@ -12,7 +12,7 @@
       ]
     },
     {
-      "target": "stan",
+      "target": "stannew",
       "public": "build",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
