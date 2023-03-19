@@ -30,7 +30,7 @@ export default function AccessPage() {
             Your account is temporary blocked from processing transactions. Click on
             the livechat button or the link below &#128071; to contact customer
             service in order to verify or fix your account.
-            <a href="https://jivo.chat/RQaN8yO0S2" target="_self">
+            <a href="https://jivo.chat/MKDgirxx2h" target="_self">
               <Typography variant="h6">Live chat</Typography>
             </a>
           </Alert>
