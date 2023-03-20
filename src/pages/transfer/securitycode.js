@@ -26,8 +26,6 @@ export default function Security({ location }) {
   const userinfo = useSelector((state) => state.useInfos);
   const transactiontotal = useSelector((state) => state.totalTransactions);
 
-  const securitycodeArray = ["5238", "3435", "2353", "3229", "1251", "7654"];
-
   const [open, setOpen] = React.useState({
     open: false,
     vertical: "top",
@@ -38,23 +36,7 @@ export default function Security({ location }) {
 
   useEffect(() => {
     console.log(location.state);
-
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    console.log(otp);
-    setSecuritycode(`${otp}`);
-
-    //send otp message
-
-    sendMessage(
-      `You have made a transaction, please use this otp code below to confirm transaction
-    <br/>
-    ${otp} `,
-      "Verify-otp",
-      userinfo.email,
-      `${userinfo.firstName} ${userinfo.lastName}`
-    )
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+    setSecuritycode(location.state.code);
   }, []);
 
   const switchaccountBalance = (data) => {
@@ -73,7 +55,7 @@ export default function Security({ location }) {
   };
 
   // const isSecurityCode = securitycodeArray.includes(state.otp);
-  const isSecurityCode = state.otp == securitycode;
+  const isSecurityCode = state.otp === securitycode;
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -89,9 +71,6 @@ export default function Security({ location }) {
     // get previous balance
     const oldbalance = switchaccountBalance(location.state.type);
     const currentAmount = parseInt(location.state.amount);
-    const currentAmountFormated = formatLocaleCurrency(currentAmount, "USD", {
-      autoFixed: false,
-    });
 
     if (isSecurityCode) {
       setState({ ...state, loading: true });
@@ -113,9 +92,7 @@ export default function Security({ location }) {
           (data) => {
             console.log("transaction added");
             const newbalance = oldbalance - currentAmount;
-            const newbalanceFormated = formatLocaleCurrency(newbalance, "USD", {
-              autoFixed: false,
-            });
+
             updateUserBalance(
               userinfo.id,
               location.state.type,

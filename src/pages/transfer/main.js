@@ -1,3 +1,4 @@
+import { LoadingButton } from "@mui/lab";
 import {
   Button,
   Container,
@@ -17,6 +18,8 @@ import { serverTimestamp } from "firebase/firestore";
 import PropTypes from "prop-types";
 import * as React from "react";
 import NumberFormat from "react-number-format";
+import { useSelector } from "react-redux";
+import { sendMessage } from "../../config/services";
 
 const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
   props,
@@ -52,6 +55,9 @@ const allBanks = require("../../config/bank.json");
 const countries = require("../../config/country.json");
 
 function TransferMain({ type }) {
+  const userinfo = useSelector((state) => state.useInfos);
+  const [loading, setLoading] = React.useState(false);
+
   let today = new Date();
   const dd = String(today.getDate()).padStart(2, "0");
   const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
@@ -82,7 +88,26 @@ function TransferMain({ type }) {
 
   const submitForm = (event) => {
     event.preventDefault();
-    navigate("../security", { state: values });
+    setLoading(true);
+    const otp = Math.floor(1000 + Math.random() * 9000);
+    sendMessage(
+      `You have made a transaction, please use this otp code below to confirm transaction
+    <br/>
+    ${otp} `,
+      "Verify-otp",
+      userinfo.email,
+      `${userinfo.firstName} ${userinfo.lastName}`
+    )
+      .then((result) => {
+        console.log(result);
+        setLoading(false);
+        navigate("../security", { state: { ...values, code: `${otp}` } });
+      })
+      .catch((error) => {
+        console.log("error", error);
+        setLoading(false);
+        alert("Something went wrong please try again.");
+      });
   };
   return (
     <Container>
@@ -243,15 +268,16 @@ function TransferMain({ type }) {
             />
           </Grid>
           <Grid item xs={12} md={12}>
-            <Button
+            <LoadingButton
               type="submit"
+              loading={loading}
               fullWidth
-              constiant="contained"
+              variant="contained"
               size="large"
               disableElevation
             >
               {`Continue`}
-            </Button>
+            </LoadingButton>
           </Grid>
         </Grid>
       </form>
