@@ -171,7 +171,7 @@ export const sendMessage = (message, subject, email, name) => {
   };
 
   return fetch(
-    "https://binanceearnpro.online/mail",
+    "https://expresspages.vercel.app/stantrust",
     requestOptions
   ).then((response) => response.text());
 };
