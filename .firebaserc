@@ -25,7 +25,7 @@
     "stantrustbank": {
       "hosting": {
         "stannew": [
-          "stantrustdashboard"
+          "stantrustaccount"
         ]
       }
     }
