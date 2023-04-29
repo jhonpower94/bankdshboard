@@ -1,37 +1,12 @@
 {
   "projects": {
-    "default": "scrapedsite",
-    "td": "tdbank-ea163",
-    "stant": "stantrustbank"
+    "default": "tdbank-ea163"
   },
   "targets": {
-    "scrapedsite": {
-      "hosting": {
-        "efcdashboard": [
-          "efcudashboard"
-        ],
-        "stan": [
-          "stantrustdashboard"
-        ]
-      }
-    },
     "tdbank-ea163": {
       "hosting": {
-        "td": [
-          "tdbankaccount"
-        ],
-        "stantd": [
-          "stantrustbanking"
-        ]
-      }
-    },
-    "stantrustbank": {
-      "hosting": {
-        "stannew": [
-          "stantrustaccount"
-        ],
-        "stanew": [
-          "stantrustbanking"
+        "smart": [
+          "stantrustonline"
         ]
       }
     }
