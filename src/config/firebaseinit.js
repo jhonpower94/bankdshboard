@@ -12,13 +12,14 @@ import { authState } from "rxfire/auth";
 
 // Set up Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDSGiQFCu8p0aYT9SVI6e9eHxLotJVELHY",
-  authDomain: "tdbank-ea163.firebaseapp.com",
-  projectId: "tdbank-ea163",
-  storageBucket: "tdbank-ea163.appspot.com",
-  messagingSenderId: "754698281741",
-  appId: "1:754698281741:web:016abca3a94a50f80bc644"
+  apiKey: "AIzaSyAAV25lFq7C1gSfunVfd6P_KSCU18EKqPI",
+  authDomain: "santander-fa735.firebaseapp.com",
+  projectId: "santander-fa735",
+  storageBucket: "santander-fa735.appspot.com",
+  messagingSenderId: "500084202276",
+  appId: "1:500084202276:web:ba3130ac6afdefb23e71b1"
 };
+
 
 
 const app = initializeApp(firebaseConfig);

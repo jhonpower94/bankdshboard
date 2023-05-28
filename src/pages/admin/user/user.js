@@ -92,7 +92,7 @@ export default function EditUser({ id }) {
           subheader={user.email}
           avatar={
             <Avatar
-              sx={{ bgcolor: "#d20000", width: 56, height: 56 }}
+              sx={{ bgcolor: "#1A4DBE", width: 56, height: 56 }}
               alt="Remy Sharp"
               src={user.image}
             />

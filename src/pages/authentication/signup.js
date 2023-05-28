@@ -2,6 +2,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -24,11 +25,21 @@ import { countrylist } from "../../config/countrylist";
 import {
   auth,
   createUserWithEmailAndPassword,
+  storage,
 } from "../../config/firebaseinit";
 import { addUsers, generateAccounts } from "../../config/services";
 import { loading$ } from "../../redux/action";
 import Logo from "../logo";
 import { useStyles } from "../styles";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import MobileDatePicker from "@mui/lab/MobileDatePicker";
+import { useDropzone } from "react-dropzone";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { doc } from "firebase/firestore";
+
+const maritalStatus = ["Single", "Married", "Divorced", "Widowed", "Other"];
+const gender = ["Male", "Female", "Other"];
 
 //const loggedIn$ = authState(auth).pipe(filter((user) => !!user));
 
@@ -75,6 +86,11 @@ export default function SignUp() {
     country: "United States", // set up with reactlocalstorage
     countrycode: "US",
     mobilecode: "+1",
+    marital: "Single",
+    gender: "Male",
+    birthdate: new Date("2014-08-18T21:11:54"),
+    imageid: { image: "", loading: false },
+    image: "https://image.com",
   });
 
   const handleChange = (event) => {
@@ -83,6 +99,13 @@ export default function SignUp() {
       [event.target.name]: event.target.value,
     });
     console.log(event.target.value);
+  };
+
+  const handleChangeDate = (newValue) => {
+    setValues({
+      ...values,
+      birthdate: newValue,
+    });
   };
 
   const handleClickShowPassword = () => {
@@ -97,6 +120,52 @@ export default function SignUp() {
     });
   };
 
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: "image/*",
+    onDrop: (acceptedFiles) => {
+      setValues({
+        ...values,
+        imageid: { image: "", loading: true },
+      });
+      const storageRef = ref(storage, `images/${acceptedFiles[0].name}`);
+      const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          setValues({
+            ...values,
+            imageid: { image: "", loading: false },
+          });
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            setValues({
+              ...values,
+              imageid: { image: `${downloadURL}`, loading: false },
+            });
+          });
+        }
+      );
+    },
+  });
+
   const submitForm = (event) => {
     event.preventDefault();
     dispatch(loading$());
@@ -110,13 +179,15 @@ export default function SignUp() {
       country: values.country,
       mobilecode: values.mobilecode,
       referrer: false,
-      //  registered: firebase.firestore.FieldValue.serverTimestamp(),
       countrycode: values.countrycode,
       paymentallowed: 2,
-      image: "https://image.com",
+      marital: values.marital,
+      gender: values.gender,
+      birthdate: values.birthdate,
+      imageid: values.imageid.image,
+      image: values.image,
       activated: false,
       Verificationstatus: false,
-      // currencycode: "",
     };
 
     createUserWithEmailAndPassword(auth, datas.email, datas.password)
@@ -159,7 +230,7 @@ export default function SignUp() {
 
       <form className={classes.form} onSubmit={submitForm}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={6} sm={6}>
             <TextField
               autoComplete="fname"
               name="firstName"
@@ -172,7 +243,7 @@ export default function SignUp() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={6} sm={6}>
             <TextField
               variant="outlined"
               required
@@ -184,7 +255,7 @@ export default function SignUp() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               variant="outlined"
               required
@@ -196,7 +267,7 @@ export default function SignUp() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <FormControl variant="outlined" fullWidth>
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
@@ -227,7 +298,7 @@ export default function SignUp() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               fullWidth
               select
@@ -250,7 +321,7 @@ export default function SignUp() {
               ))}
             </TextField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               variant="outlined"
               fullWidth
@@ -267,6 +338,88 @@ export default function SignUp() {
               }}
             />
           </Grid>
+
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              select
+              required
+              variant="outlined"
+              label="Marital status"
+              name="marital"
+              value={values.marital}
+              onChange={handleChange}
+            >
+              {maritalStatus.map((ms, index) => (
+                <MenuItem
+                  key={index}
+                  value={ms}
+                  onClick={() => chageCountryCode(ms, ms)}
+                >
+                  {ms}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              select
+              required
+              variant="outlined"
+              label="Gender"
+              name="gender"
+              value={values.gender}
+              onChange={handleChange}
+            >
+              {gender.map((ms, index) => (
+                <MenuItem
+                  key={index}
+                  value={ms}
+                  onClick={() => chageCountryCode(ms, ms)}
+                >
+                  {ms}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={6}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <MobileDatePicker
+                label="Date of birth"
+                inputFormat="MM/dd/yyyy"
+                value={values.birthdate}
+                onChange={handleChangeDate}
+                renderInput={(params) => <TextField fullWidth {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              required
+              value={values.imageid.image}
+              label="ID Verification"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <div {...getRootProps({ className: "dropzone" })}>
+                      <input {...getInputProps()} />
+                      <LoadingButton
+                        loading={values.image.loading}
+                        variant="contained"
+                        disableElevation
+                      >
+                        Choose file
+                      </LoadingButton>
+                    </div>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+
           <Grid item xs={12}>
             <FormControlLabel
               control={

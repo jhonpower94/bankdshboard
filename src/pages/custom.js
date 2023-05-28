@@ -8,8 +8,8 @@ export const MenuIconCustom = () => {
       fill="none"
       className="css-1170n61"
     >
-      <rect x="1" y="5" width="14" height="1.5" rx="1" fill="#d20000"></rect>
-      <rect x="1" y="9" width="14" height="1.5" rx="1" fill="#d20000"></rect>
+      <rect x="1" y="5" width="14" height="1.5" rx="1" fill="#1A4DBE"></rect>
+      <rect x="1" y="9" width="14" height="1.5" rx="1" fill="#1A4DBE"></rect>
     </svg>
   );
 };

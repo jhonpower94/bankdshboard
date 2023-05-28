@@ -22,6 +22,8 @@ import {
 } from "../config/services";
 import AppbarMain, { Drawertop } from "./appbar/appbar";
 
+
+
 const drawerWidth = 300;
 
 function ResponsiveDrawer(props) {
@@ -100,6 +102,7 @@ function ResponsiveDrawer(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
+    
     <Box
       sx={{
         display: {
@@ -163,6 +166,7 @@ function ResponsiveDrawer(props) {
         {props.children}
       </Box>
     </Box>
+    
   );
 }
 
