@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "target": "smart",
+      "target": "santander",
       "public": "build",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [

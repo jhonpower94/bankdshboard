@@ -1,12 +1,20 @@
 {
   "projects": {
-    "default": "tdbank-ea163"
+    "default": "tdbank-ea163",
+    "san": "santander-fa735"
   },
   "targets": {
     "tdbank-ea163": {
       "hosting": {
         "smart": [
           "stantrustonline"
+        ]
+      }
+    },
+    "santander-fa735": {
+      "hosting": {
+        "santander": [
+          "santanderaccount"
         ]
       }
     }
