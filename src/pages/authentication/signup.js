@@ -407,7 +407,7 @@ export default function SignUp() {
                     <div {...getRootProps({ className: "dropzone" })}>
                       <input {...getInputProps()} />
                       <LoadingButton
-                        loading={values.image.loading}
+                        loading={values.imageid.loading}
                         variant="contained"
                         disableElevation
                       >
