@@ -1,4 +1,10 @@
-import { Avatar, Button, CardHeader, Grid } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  CardHeader,
+  Grid,
+  InputAdornment,
+} from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 import * as React from "react";
@@ -10,6 +16,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { db, storage } from "../../../config/firebaseinit";
 import "./pintura/pintura.css";
+import { LoadingButton } from "@mui/lab";
 
 export default function EditUser({ id }) {
   const [user, setUser] = React.useState({
@@ -18,6 +25,7 @@ export default function EditUser({ id }) {
     email: "",
     image: "http//image.com",
     transactionlimit: 0,
+    numberformat: "",
   });
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -60,6 +68,7 @@ export default function EditUser({ id }) {
 
   const [values, setValues] = React.useState({
     limit: 0,
+    numberformat: user.numberformat
   });
 
   React.useEffect(() => {
@@ -75,6 +84,15 @@ export default function EditUser({ id }) {
       [event.target.name]: event.target.value,
     });
   };
+
+  const changeMobile = ()=>{
+    console.log(values.numberformat)
+    
+    addUsers(id, { numberformat: values.numberformat }).then(() =>
+      alert("Mobile No updated 👍")
+    );
+    
+  }
 
   const submit = () => {
     //  console.log({ balance: values.numberformat });
@@ -132,6 +150,30 @@ export default function EditUser({ id }) {
             Add image
           </Button>
         </div>
+      </Grid>
+      <Grid item xs={12} md={12}>
+        <TextField
+          fullWidth
+          required
+         defaultValue={values.numberformat}
+          label={`Mobile ${user.numberformat}`}
+          name="numberformat"
+          onChange={handleChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <LoadingButton
+                  loading={false}
+                  variant="contained"
+                  disableElevation
+                  onClick={changeMobile}
+                >
+                  Update mobile
+                </LoadingButton>
+              </InputAdornment>
+            ),
+          }}
+        />
       </Grid>
       <Grid item xs={12} md={12}>
         <Button
