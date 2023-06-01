@@ -63,7 +63,7 @@ export default function CreateTransaction({ type, id }) {
   const [values, setValues] = React.useState({
     type: type,
     amount: "0",
-    fullname: "",
+    sendername: "",
     accountnumber: "",
     date: "",
     transaction_type: "Credit",
@@ -184,10 +184,10 @@ export default function CreateTransaction({ type, id }) {
           <TextField
             fullWidth
             id="outlined-reciever"
-            label="Recievers name"
+            label="Sender name"
             variant="outlined"
-            name="recievername"
-            value={values.recievername}
+            name="sendername"
+            value={values.sendername}
             onChange={handleChange}
             required
           />

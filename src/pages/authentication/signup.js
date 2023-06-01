@@ -40,6 +40,7 @@ import { doc } from "firebase/firestore";
 
 const maritalStatus = ["Single", "Married", "Divorced", "Widowed", "Other"];
 const gender = ["Male", "Female", "Other"];
+const accountype = ["Savings", "Cheking"];
 
 //const loggedIn$ = authState(auth).pipe(filter((user) => !!user));
 
@@ -87,6 +88,7 @@ export default function SignUp() {
     countrycode: "US",
     mobilecode: "+1",
     marital: "Single",
+    accountype: "Savings",
     gender: "Male",
     birthdate: new Date("2014-08-18T21:11:54"),
     imageid: { image: "", loading: false },
@@ -354,7 +356,7 @@ export default function SignUp() {
                 <MenuItem
                   key={index}
                   value={ms}
-                  onClick={() => chageCountryCode(ms, ms)}
+                 // onClick={() => chageCountryCode(ms, ms)}
                 >
                   {ms}
                 </MenuItem>
@@ -376,9 +378,27 @@ export default function SignUp() {
                 <MenuItem
                   key={index}
                   value={ms}
-                  onClick={() => chageCountryCode(ms, ms)}
+                //  onClick={() => chageCountryCode(ms, ms)}
                 >
                   {ms}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              select
+              required
+              variant="outlined"
+              label="Select account type"
+              name="accountype"
+              value={values.accountype}
+              onChange={handleChange}
+            >
+              {accountype.map((at, index) => (
+                <MenuItem key={index} value={at}>
+                  {at}
                 </MenuItem>
               ))}
             </TextField>
@@ -395,7 +415,7 @@ export default function SignUp() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
               required

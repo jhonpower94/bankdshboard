@@ -39,8 +39,8 @@ export default function TransactioMain({ data, type }) {
               <TableCell>Type</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Reciever</TableCell>
-              <TableCell>Reference</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Reference No</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -61,8 +61,11 @@ export default function TransactioMain({ data, type }) {
                   <CurrencyFormat amount={row.amount} />
                 </TableCell>
                 <TableCell>{row.date}</TableCell>
-                <TableCell>
-                  {row.fullname === "" ? row.accountnumber : row.fullname}
+                <TableCell sx={{ textTransform: "uppercase" }}>
+                  {row.transaction_type === "Credit"
+                    ? `FROM: ${row.sendername} `
+                    : "Payment/Transfer "}
+                  <br />REF: {row.uid}
                 </TableCell>
                 <TableCell>{row.uid}</TableCell>
               </TableRow>
