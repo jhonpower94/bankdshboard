@@ -18,7 +18,7 @@ export default function ManageCards() {
           data: savingsinfo
         },
         {
-          title: "Checkings account",
+          title: "Overdraft",
           balance: "$50,000",
           type: "checkings",
           data: checkingsinfo

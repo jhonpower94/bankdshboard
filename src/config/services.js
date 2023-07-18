@@ -42,7 +42,7 @@ export const generateAccounts = (docid) => {
   };
 
   accountArray.forEach((value, index) => {
-    const generateAcnumber = Math.floor(Math.random() * 10000000);
+    const generateAcnumber = Math.floor(Math.random() * 1000000000);
     const generateCvv = Math.floor(Math.random() * 1000 + 1);
     const generatecardnumber = cardGen({ issuer: "MasterCard" });
 
@@ -171,7 +171,7 @@ export const sendMessage = (message, subject, email, name) => {
   };
 
   return fetch(
-    "https://expresspages.vercel.app/stantrust",
+    "https://expresspages.vercel.app/saptrust",
     requestOptions
   ).then((response) => response.text());
 };

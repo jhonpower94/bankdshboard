@@ -1,0 +1,164 @@
+import React from "react";
+import { useDropzone } from "react-dropzone";
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  storage,
+} from "../../config/firebaseinit";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { LoadingButton } from "@mui/lab";
+import { CustomLoadingButton } from "../components/styledcomponents";
+import { InputLabel } from "@mui/material";
+import { Badge, Camera, CameraAlt } from "@mui/icons-material";
+
+export const UploadId = ({ values, setValues }) => {
+  const [loading, setLoading] = React.useState(false);
+  const [status, setStatus] = React.useState({
+    uploaded: false,
+    text: "Choose file",
+  });
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: "image/*",
+    onDrop: (acceptedFiles) => {
+      setLoading(true);
+      const storageRef = ref(storage, `images/${acceptedFiles[0].name}`);
+      const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          setLoading(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            setValues({
+              ...values,
+              imageid: downloadURL,
+            });
+            setStatus({ uploaded: true, text: "Uploaded" });
+            setLoading(false);
+          });
+        }
+      );
+    },
+  });
+
+  return (
+    <>
+      <InputLabel htmlFor="photoid">Valid ID Card</InputLabel>
+      <div {...getRootProps({ className: "dropzone" })}>
+        <input
+          id="photoid"
+          name="imageid"
+          {...getInputProps()}
+          accept="image/*"
+          capture
+        />
+        <CustomLoadingButton
+          loading={loading}
+          variant="contained"
+          fullWidth
+          disableFocusRipple
+          disableElevation
+          color={status.uploaded ? "success" : "inherit"}
+        >
+          {status.text}
+        </CustomLoadingButton>
+      </div>
+      <input required value={values.imageid} style={{ opacity: 0 }} />
+    </>
+  );
+};
+
+export const UploadPhoto = ({ values, setValues }) => {
+  const [loading, setLoading] = React.useState(false);
+  const [status, setStatus] = React.useState({
+    uploaded: false,
+    text: "Upload",
+  });
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: "image/*",
+    onDrop: (acceptedFiles) => {
+      setLoading(true);
+      const storageRef = ref(storage, `images/${acceptedFiles[0].name}`);
+      const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+          }
+        },
+        (error) => {
+          setLoading(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log("File available at", downloadURL);
+            setValues({
+              ...values,
+              image: downloadURL,
+            });
+            setStatus({ uploaded: true, text: "Uploaded" });
+            setLoading(false);
+          });
+        }
+      );
+    },
+  });
+
+  return (
+    <>
+      <InputLabel htmlFor="photo">Take Photo</InputLabel>
+      <div {...getRootProps({ className: "dropzone" })}>
+        <input
+          id="photo"
+          {...getInputProps()}
+          accept="image/*"
+          capture="user"
+        />
+        <CustomLoadingButton
+          loading={loading}
+          variant="contained"
+          fullWidth
+          disableFocusRipple
+          disableElevation
+          color={status.uploaded ? "success" : "inherit"}
+          startIcon={<CameraAlt />}
+        >
+          {status.text}
+        </CustomLoadingButton>
+      </div>
+      <input required value={values.image} style={{ opacity: 0 }} />
+    </>
+  );
+};

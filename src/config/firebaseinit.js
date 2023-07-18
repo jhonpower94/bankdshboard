@@ -12,12 +12,12 @@ import { authState } from "rxfire/auth";
 
 // Set up Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAAV25lFq7C1gSfunVfd6P_KSCU18EKqPI",
-  authDomain: "santander-fa735.firebaseapp.com",
-  projectId: "santander-fa735",
-  storageBucket: "santander-fa735.appspot.com",
-  messagingSenderId: "500084202276",
-  appId: "1:500084202276:web:ba3130ac6afdefb23e71b1"
+  apiKey: "AIzaSyAVhoDz02wqEbDQyz_1FhfDuzJYtfwEnbQ",
+  authDomain: "saptrust-6a083.firebaseapp.com",
+  projectId: "saptrust-6a083",
+  storageBucket: "saptrust-6a083.appspot.com",
+  messagingSenderId: "1007531186146",
+  appId: "1:1007531186146:web:93f5c611c9574754b98bbb"
 };
 
 

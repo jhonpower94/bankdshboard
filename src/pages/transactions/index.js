@@ -56,27 +56,7 @@ const TransferIndex = ({ account }) => {
 
   return (
     <div>
-      <Tabs
-        variant="fullWidth"
-        value={state.index}
-        fullWidth
-        onChange={handleChange}
-        style={styles.tabs}
-      >
-        {accountarrays.map((account, index) => (
-          <Tab label={account.accountype} key={index} />
-        ))}
-      </Tabs>
-      <SwipeableViews
-        index={index}
-        onChangeIndex={(index) => handleChangeIndex(index)}
-      >
-        {accountarrays.map((account, index) => (
-          <div style={Object.assign({}, styles.slide)} key={index}>
-            <TransactioMain data={account.data} type={account.accountype} />
-          </div>
-        ))}
-      </SwipeableViews>
+      <TransactioMain data={[...transactions.savings]} type={"savings"} />
     </div>
   );
 };

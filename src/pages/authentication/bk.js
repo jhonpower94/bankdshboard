@@ -36,7 +36,6 @@ import { addUsers, generateAccounts } from "../../config/services";
 import { loading$ } from "../../redux/action";
 import Logo from "../logo";
 import { useStyles } from "../styles";
-import { UploadId, UploadPhoto } from "./uploadid";
 
 const maritalStatus = ["Single", "Married", "Divorced", "Widowed", "Other"];
 const gender = ["Male", "Female", "Other"];
@@ -91,8 +90,8 @@ export default function SignUp() {
     accountype: "Savings",
     gender: "Male",
     birthdate: new Date("2014-08-18T21:11:54"),
-    imageid: "",
-    image: "",
+    imageid: { image: "", loading: false },
+    image: "https://image.com",
   });
 
   const handleChange = (event) => {
@@ -168,6 +167,8 @@ export default function SignUp() {
     },
   });
 
+
+
   const submitForm = (event) => {
     event.preventDefault();
     dispatch(loading$());
@@ -186,7 +187,7 @@ export default function SignUp() {
       marital: values.marital,
       gender: values.gender,
       birthdate: values.birthdate,
-      imageid: values.imageid,
+      imageid: values.imageid.image,
       image: values.image,
       activated: false,
       Verificationstatus: false,
@@ -288,7 +289,6 @@ export default function SignUp() {
                 value={values.password}
                 name="password"
                 onChange={handleChange}
-                label="Password"
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -424,13 +424,33 @@ export default function SignUp() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={6}>
-            <UploadId values={values} setValues={setValues} />
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              required
+              value={values.imageid.image}
+              label="ID Verification"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <div {...getRootProps({ className: "dropzone" })}>
+                      <input {...getInputProps()} />
+                      <LoadingButton
+                        loading={values.imageid.loading}
+                        variant="contained"
+                        disableElevation
+                      >
+                        Choose file
+                      </LoadingButton>
+                    </div>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Grid>
-          <Grid item xs={6}>
-            <UploadPhoto values={values} setValues={setValues} />
+          <Grid item xs={12}>
+          <input type="file" accept="image/*" capture="user" required />
           </Grid>
-
           <Grid item xs={12}>
             <FormControlLabel
               control={

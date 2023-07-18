@@ -1,8 +1,8 @@
-import { MenuItem, Select, Tab, Tabs } from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import React, { useState } from "react";
-
+import { useSelector } from "react-redux";
 import SwipeableViews from "react-swipeable-views";
-import TransferMain from "./main";
+import TransactioMain from "./main";
 
 const styles = {
   tabs: {
@@ -25,7 +25,7 @@ const styles = {
 
 const TransferIndex = ({ account }) => {
   const isSavings = account === "savings";
-
+  const transactions = useSelector((state) => state.totalTransactionsType);
   const [state, setState] = useState({ index: isSavings ? 0 : 1 });
 
   const handleChange = (event, value) => {
@@ -43,18 +43,28 @@ const TransferIndex = ({ account }) => {
 
   const { index } = state;
 
-  const accountarrays = ["savings", "overdraft"];
+  const accountarrays = [
+    {
+      accountype: "savings",
+      data: [...transactions.savings],
+    },
+    {
+      accountype: "checkings",
+      data: [...transactions.checkings],
+    },
+  ];
 
   return (
     <div>
       <Tabs
         variant="fullWidth"
         value={state.index}
+        fullWidth
         onChange={handleChange}
         style={styles.tabs}
       >
         {accountarrays.map((account, index) => (
-          <Tab label={account} key={index} />
+          <Tab label={account.accountype} key={index} />
         ))}
       </Tabs>
       <SwipeableViews
@@ -63,7 +73,7 @@ const TransferIndex = ({ account }) => {
       >
         {accountarrays.map((account, index) => (
           <div style={Object.assign({}, styles.slide)} key={index}>
-            <TransferMain type={account} />
+            <TransactioMain data={account.data} type={account.accountype} />
           </div>
         ))}
       </SwipeableViews>

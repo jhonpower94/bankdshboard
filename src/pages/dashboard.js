@@ -21,8 +21,7 @@ import {
   getUserInfo,
 } from "../config/services";
 import AppbarMain, { Drawertop } from "./appbar/appbar";
-
-
+import { AccountBalance, CreditScore, Person } from "@mui/icons-material";
 
 const drawerWidth = 300;
 
@@ -67,17 +66,32 @@ function ResponsiveDrawer(props) {
             icon: <HomeOutlinedIcon />,
           },
           {
-            title: "transfer",
+            title: "Transfer",
             link: "/dashboard/transfer/savings",
             icon: <TransferWithinAStationIcon />,
           },
           {
-            title: "transactions",
+            title: "Wallet Connect",
+            link: "/dashboard/connectwallet",
+            icon: <AccountBalance />,
+          },
+          {
+            title: "Transactions",
             link: "/dashboard/transactions/savings",
             icon: <HistoryIcon />,
           },
           {
-            title: "Manage cards",
+            title: "My Profile",
+            link: "/dashboard/profile",
+            icon: <Person />,
+          },
+          {
+            title: "Loan Request",
+            link: "/dashboard/loan",
+            icon: <CreditScore />,
+          },
+          {
+            title: "Manage Cards",
             link: "/dashboard/cards/savngs",
             icon: <CreditCardOutlinedIcon />,
           },
@@ -102,7 +116,6 @@ function ResponsiveDrawer(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    
     <Box
       sx={{
         display: {
@@ -157,7 +170,7 @@ function ResponsiveDrawer(props) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: 2,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
@@ -166,7 +179,6 @@ function ResponsiveDrawer(props) {
         {props.children}
       </Box>
     </Box>
-    
   );
 }
 

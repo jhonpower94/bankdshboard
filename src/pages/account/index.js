@@ -1,41 +1,60 @@
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
+import { ArrowForwardIos } from "@mui/icons-material";
 import {
-  Card,
+  Button,
   CardActions,
   CardContent,
   CardHeader,
-  IconButton,
-  Stack,
+  Toolbar,
   Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import { navigate } from "@reach/router";
 import * as React from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 import { useSelector } from "react-redux";
+import CustomizedSnackbars from "../components/snackbar";
+import { BootstrapButton, StyledCard } from "../components/styledcomponents";
+import CreditCard from "../creditcard";
 import { CurrencyFormat } from "../currencyformatter";
 import { useStyles } from "../styles";
-import CardSlder from "./cardslider";
-import Profile, { ProfileHeader } from "./profile";
+import TransactioLight from "../transactions/transactionlight";
+import { ProfileHeader } from "./profile";
 
 function AccountIndex() {
+  const classes = useStyles();
   const savingsinfo = useSelector((state) => state.savingsInfos);
   const checkingsinfo = useSelector((state) => state.checkingsInfos);
+  const transactions = useSelector((state) => state.totalTransactionsType);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
 
-  const classes = useStyles();
+  const handleClick = () => {
+    setOpenSnackbar(true);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
+      <CustomizedSnackbars
+        openSnackbar={openSnackbar}
+        handleCloseSnackbar={handleCloseSnackbar}
+        severity="success"
+        message={"Account number copied"}
+      />
       <Grid container spacing={6}>
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={6}>
           <Grid container spacing={2}>
             <Grid item xs={12} md={12}>
               <ProfileHeader />
             </Grid>
             <Grid item xs={12} md={12}>
-              <CardSlder />
+              <CreditCard type={"Savings"} data={savingsinfo} />
             </Grid>
             <Grid
               sx={{
@@ -48,38 +67,130 @@ function AccountIndex() {
               xs={12}
               md={12}
             >
-              <Profile />
+              <Toolbar>
+                <Typography variant="body1">Recent transactions</Typography>
+                <Box sx={{ flexGrow: 1 }} />
+                <Button
+                  variant="text"
+                  endIcon={<ArrowForwardIos />}
+                  onClick={() => navigate("/dashboard/transactions/savings")}
+                >
+                  See all
+                </Button>
+              </Toolbar>
+              <TransactioLight
+                data={[...transactions.savings]}
+                type={"savings"}
+              />
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} md={7}>
-          <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Grid container spacing={3}>
             {[
               {
-                title: "Savings account",
-                account_number: savingsinfo.accountnumber,
+                title: "Savings balance",
+                account_number: `Account number: ${savingsinfo.accountnumber}`,
                 balance: savingsinfo.balance,
                 page: "savings",
+                actions: (
+                  <>
+                    <CopyToClipboard
+                      text={savingsinfo.accountnumber}
+                      onCopy={handleClick}
+                    >
+                      <BootstrapButton
+                        fullWidth
+                        variant="contained"
+                        disableElevation
+                      >
+                        Copy account
+                      </BootstrapButton>
+                    </CopyToClipboard>
+                    <BootstrapButton
+                      fullWidth
+                      variant="contained"
+                      disableElevation
+                      onClick={() => navigate(`/dashboard/transfer/savings`)}
+                    >
+                      Transfer
+                    </BootstrapButton>
+                  </>
+                ),
               },
               {
-                title: "Checkings account",
-                account_number: checkingsinfo.accountnumber,
+                title: "Overdraft",
+                account_number: "",
                 balance: checkingsinfo.balance,
                 page: "checkings",
+                actions: (
+                  <BootstrapButton
+                    fullWidth
+                    variant="contained"
+                    disableElevation
+                    onClick={() => navigate(`/dashboard/transfer/checkings`)}
+                  >
+                    Transfer
+                  </BootstrapButton>
+                ),
               },
             ].map((accnt, index) => (
               <Grid item xs={12} md={12} key={index}>
-                <Card>
+                <StyledCard variant="outlined">
                   <CardHeader
                     title={accnt.title}
-                    subheader={`Account number: ${accnt.account_number}`}
+                    subheader={accnt.account_number}
+                    titleTypographyProps={{ variant: "h5" }}
+                    subheaderTypographyProps={{ variant: "h6" }}
                   />
                   <CardContent>
                     <Typography variant="h4">
                       <CurrencyFormat amount={accnt.balance} />
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions>{accnt.actions}</CardActions>
+                </StyledCard>
+              </Grid>
+            ))}
+            <Grid
+              sx={{
+                display: {
+                  xs: "block",
+                  md: "none",
+                },
+              }}
+              item
+              xs={12}
+              md={12}
+            >
+              <Toolbar>
+                <Typography variant="body1">Recent transactions</Typography>
+                <Box sx={{ flexGrow: 1 }} />
+                <Button
+                  variant="text"
+                  endIcon={<ArrowForwardIos />}
+                  onClick={() => navigate("/dashboard/transactions/savings")}
+                >
+                  See all
+                </Button>
+              </Toolbar>
+              <TransactioLight
+                data={[...transactions.savings]}
+                type={"savings"}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Box>
+  );
+}
+
+export default AccountIndex;
+
+/*
+ <Profile />
+ <CardActions>
                     <Stack direction="row" spacing={2}>
                       {[
                         {
@@ -120,27 +231,4 @@ function AccountIndex() {
                       ))}
                     </Stack>
                   </CardActions>
-                </Card>
-              </Grid>
-            ))}
-            <Grid
-              sx={{
-                display: {
-                  xs: "block",
-                  md: "none",
-                },
-              }}
-              item
-              xs={12}
-              md={12}
-            >
-              <Profile />
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Box>
-  );
-}
-
-export default AccountIndex;
+                  */

@@ -200,7 +200,7 @@ export default function SignIn({ pathtonavigate }) {
           <Grid mt={4} item>
             <Link
               component="button"
-              onClick={() => navigate("account/resetpassword")}
+              onClick={() => navigate("resetpassword")}
               color="textPrimary"
             >
               {`Forgot password`}

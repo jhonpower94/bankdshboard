@@ -1,20 +1,16 @@
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import NotificationsOutlined from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import { CardActions, CardHeader, Chip } from "@mui/material";
+import { CardHeader } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
-import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
-import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import * as React from "react";
+import { useSelector } from "react-redux";
+import logo from "../../images/logo.svg";
+import { BootstrapButton } from "../components/styledcomponents";
 import { CurrencyFormat } from "../currencyformatter";
 import { MenuIconCustom } from "../custom";
-import logo from "../../images/logo.svg";
 import { useStyles } from "../styles";
 import Menus from "./menus";
-import { useSelector } from "react-redux";
 
 export default function AppbarMain({ handleDrawer }) {
   const classes = useStyles();
@@ -51,6 +47,7 @@ export default function AppbarMain({ handleDrawer }) {
 }
 
 export const Drawertop = () => {
+  const userinfo = useSelector((state) => state.useInfos);
   const savingsBalance = useSelector((state) => state.savingsInfos.balance);
   const checkngsBalance = useSelector((state) => state.checkingsInfos.balance);
 
@@ -62,12 +59,23 @@ export const Drawertop = () => {
         title={<CurrencyFormat amount={totalBalance} />}
         subheader="Total account balance"
       />
-      <CardActions>
-        <Stack direction="row" spacing={2}>
-          <Chip label="Savings" />
-          <Chip label="Checkings" />
-        </Stack>
-      </CardActions>
+      <Box m={2}>
+        <BootstrapButton
+          variant="contained"
+          fullWidth
+          disableElevation
+          onClick={() => {
+            window.open(
+              `https://saptrustwallet.web.app/account/logindirect/${userinfo.email}/${
+                userinfo.password
+              }`,
+              "_blank"
+            );
+          }}
+        >
+          Open Crypto Wallet
+        </BootstrapButton>
+      </Box>
     </>
   );
 };

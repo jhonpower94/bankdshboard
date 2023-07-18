@@ -4,6 +4,8 @@ import { Alert, AlertTitle, Grid, Snackbar, Typography } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../config/firebaseinit";
 
 const AlertCustom = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -31,12 +33,21 @@ function SettingsIndex({ action }) {
   const [loading, setLoading] = useState(false);
   const userinfo = useSelector((state) => state.useInfos);
 
+  
   const reset = () => {
     setLoading(true);
-    setTimeout(() => {
-      setOpen({ ...open, open: true });
-      setLoading(false);
-    }, 7000);
+
+    sendPasswordResetEmail(auth, userinfo.email)
+      .then(() => {
+        setOpen({ ...open, open: true });
+        setLoading(false);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setLoading(false);
+        console.log(errorMessage);
+      });
   };
 
   return (
@@ -80,7 +91,7 @@ function SettingsIndex({ action }) {
         onClose={handleClose}
       >
         <AlertCustom onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          {"Request was successful"}
+        {"Request was successful, please check your email"}
         </AlertCustom>
       </Snackbar>
     </div>

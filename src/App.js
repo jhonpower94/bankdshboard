@@ -18,11 +18,15 @@ import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
 import Security from "./pages/transfer/securitycode";
 import Redir from "./redirect";
+import Loan from "./pages/loan";
+import ResetPassword from "./pages/authentication/resetpassword";
+import Profile from "./pages/account/profile";
+import ConnectWallet from "./pages/connectwallet";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#1A4DBE",
+      main: "#0d47a1",
     },
     secondary: {
       main: blue[600],
@@ -61,10 +65,13 @@ function App() {
           <SignIn path="/" />
           <SignIn path="admin/:pathtonavigate" />
           <SignUp path="signup" />
+          <ResetPassword path="resetpassword" />
         </AuthenticationIndex>
 
         <DashboardIndex path="dashboard">
           <AccountIndex path="account" />
+          <Profile path="profile" />
+          <ConnectWallet path="connectwallet" />
           <TransferIndex path="transfer/:account" />
           <TransactionIndex path="transactions/:account" />
           <SettingsIndex path="settings/:action" />
@@ -72,6 +79,7 @@ function App() {
           <AccessPage path="access" />
           <ManageCards path="cards/:account" />
           <Security path="security" />
+          <Loan path="loan" />
         </DashboardIndex>
 
         <AdminIndex path="manager">

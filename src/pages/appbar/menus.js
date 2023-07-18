@@ -1,8 +1,8 @@
+import { EmailOutlined } from "@mui/icons-material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import NotificationsOutlined from "@mui/icons-material/NotificationsOutlined";
-import PasswordIcon from "@mui/icons-material/Password";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
@@ -110,7 +110,7 @@ export default function Menus() {
     signOut(auth)
       .then(() => {
         console.log("Signed out");
-        navigate("../")
+        navigate("/account/login")
       })
       .catch((error) => {
         console.log(error);
@@ -171,7 +171,7 @@ export default function Menus() {
       >
         {[
           { ttle: "password", icon: <VisibilityOutlinedIcon /> },
-          { ttle: "security pin", icon: <PasswordIcon /> },
+          { ttle: "email", icon: <EmailOutlined /> },
         ].map((menuitem, index) => (
           <MenuItem
             onClick={() => {

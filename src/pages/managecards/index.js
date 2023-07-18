@@ -65,7 +65,7 @@ const TransferIndex = ({ account }) => {
       data: savingsinfo,
     },
     {
-      title: "Checkings account",
+      title: "Overdraft",
       balance: "$50,000",
       type: "checkings",
       data: checkingsinfo,
@@ -74,60 +74,25 @@ const TransferIndex = ({ account }) => {
 
   return (
     <div>
-      <Tabs
-        variant="fullWidth"
-        value={state.index}
-        fullWidth
-        onChange={handleChange}
-        style={styles.tabs}
-      >
-        {accountarrays.map((account, index) => (
-          <Tab label={account.type} key={index} />
-        ))}
-      </Tabs>
-      <SwipeableViews
-        index={index}
-        onChangeIndex={(index) => handleChangeIndex(index)}
-      >
-        {accountarrays.map((account, index) => (
-          <div style={Object.assign({}, styles.slide)} key={index}>
-            <Grid
-              container
-              spacing={2}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Grid item xs={12} md={6}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: 3,
-                  }}
-                >
-                  <CreditCard type={account.type} data={account.data} />
-                </div>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack direction="column" spacing={2}>
-                  {["Enable card", "Change Card", "Order card"].map(
-                    (val, index) => (
-                      <CustomButton
-                        key={index}
-                        onClick={() => {
-                           navigate(`../access`);
-                        }}
-                      >
-                        {val}
-                      </CustomButton>
-                    )
-                  )}
-                </Stack>
-              </Grid>
-            </Grid>
-          </div>
-        ))}
-      </SwipeableViews>
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <Grid item xs={12} md={6}>
+          <CreditCard type={"savings"} data={savingsinfo} />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Stack direction="column" spacing={2}>
+            {["Enable card", "Change Card", "Order card"].map((val, index) => (
+              <CustomButton
+                key={index}
+                onClick={() => {
+                  navigate(`../access`);
+                }}
+              >
+                {val}
+              </CustomButton>
+            ))}
+          </Stack>
+        </Grid>
+      </Grid>
     </div>
   );
 };
