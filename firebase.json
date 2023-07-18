@@ -1,7 +1,7 @@
 {
   "hosting": [
     {
-      "target": "santander",
+      "target": "saptrust",
       "public": "build",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [

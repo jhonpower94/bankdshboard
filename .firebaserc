@@ -1,7 +1,8 @@
 {
   "projects": {
     "default": "tdbank-ea163",
-    "san": "santander-fa735"
+    "san": "santander-fa735",
+    "saptrust": "saptrust-6a083"
   },
   "targets": {
     "tdbank-ea163": {
@@ -15,6 +16,13 @@
       "hosting": {
         "santander": [
           "santanderaccount"
+        ]
+      }
+    },
+    "saptrust-6a083": {
+      "hosting": {
+        "saptrust": [
+          "saptrustaccount"
         ]
       }
     }
