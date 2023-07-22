@@ -60,13 +60,12 @@ export const UploadId = ({ values, setValues }) => {
   return (
     <>
       <InputLabel htmlFor="photoid">Valid ID Card</InputLabel>
-      <div {...getRootProps({ className: "dropzone" })}>
+      <div {...getRootProps({ className: "dropzoneimageid" })}>
         <input
           id="photoid"
           name="imageid"
           {...getInputProps()}
           accept="image/*"
-          capture
         />
         <CustomLoadingButton
           loading={loading}
