@@ -59,7 +59,7 @@ export const Drawertop = () => {
         title={<CurrencyFormat amount={totalBalance} />}
         subheader="Total account balance"
       />
-      <Box m={2}>
+      <Box m={2} >
         <BootstrapButton
           variant="contained"
           fullWidth

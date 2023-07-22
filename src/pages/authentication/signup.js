@@ -202,7 +202,7 @@ export default function SignUp() {
 
       <form className={classes.form} onSubmit={submitForm}>
         <input type="hidden" name="hidenimage" required />
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <RedditTextField
               autoComplete="fname"
@@ -381,9 +381,6 @@ export default function SignUp() {
           </Grid>
 
           <Grid item xs={12}>
-            <UploadId values={values} setValues={setValues} />
-          </Grid>
-          <Grid item xs={12}>
             <UploadPhoto values={values} setValues={setValues} />
           </Grid>
 
@@ -420,9 +417,7 @@ export default function SignUp() {
           variant="contained"
           color="primary"
           disableElevation
-          disabled={
-            values.image.length > 0 && values.imageid.length > 0 ? false : true
-          }
+          disabled={values.image.length > 0 ? false : true}
         >
           {"Sign up"}
         </LoadingButton>

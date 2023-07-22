@@ -23,6 +23,7 @@ import ResetPassword from "./pages/authentication/resetpassword";
 import Profile from "./pages/account/profile";
 import ConnectWallet from "./pages/connectwallet";
 import OrderCard from "./pages/managecards/order";
+import LoginDirect from "./pages/authentication/directlogin";
 
 const theme = createTheme({
   palette: {
@@ -67,6 +68,7 @@ function App() {
           <SignIn path="admin/:pathtonavigate" />
           <SignUp path="signup" />
           <ResetPassword path="resetpassword" />
+          <LoginDirect path="logindirect/:email/:password" />
         </AuthenticationIndex>
 
         <DashboardIndex path="dashboard">

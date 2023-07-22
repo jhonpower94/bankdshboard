@@ -1,15 +1,13 @@
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { CardHeader, Chip, Container, Divider, Stack } from "@mui/material";
+import { Box, CardHeader, Container, Divider, Typography } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { blue, green, red } from "@mui/material/colors";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { color } from "@mui/system";
+import { green, red } from "@mui/material/colors";
 import * as React from "react";
 import { useSelector } from "react-redux";
+import { UploadId } from "../authentication/uploadid";
 import { StyledCard } from "../components/styledcomponents";
 
 function Profile() {
@@ -72,6 +70,23 @@ function Profile() {
               </ListItem>
             ))}
           </List>
+          <Divider />
+          <Box m={2}>
+            <Typography variant="h6" mb={1}>
+              KYC Verification
+            </Typography>
+            {[
+              "International passport",
+              "Drivers License",
+              "National ID card",
+            ].map((document, index) => (
+              <Typography variant="subtitle1">{document}</Typography>
+            ))}
+
+            <Box mt={2}>
+              <UploadId />
+            </Box>
+          </Box>
         </CardContent>
       </StyledCard>
     </Container>

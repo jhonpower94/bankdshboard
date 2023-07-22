@@ -3,12 +3,13 @@ import { InputLabel } from "@mui/material";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React from "react";
 import { useDropzone } from "react-dropzone";
-import {
-  storage
-} from "../../config/firebaseinit";
+import { storage } from "../../config/firebaseinit";
 import { CustomLoadingButton } from "../components/styledcomponents";
 
-export const UploadId = ({ values, setValues }) => {
+export const UploadId = () => {
+  const [values, setValues] = React.useState({
+    imageid: "",
+  });
   const [loading, setLoading] = React.useState(false);
   const [status, setStatus] = React.useState({
     uploaded: false,
@@ -73,7 +74,7 @@ export const UploadId = ({ values, setValues }) => {
           fullWidth
           disableFocusRipple
           disableElevation
-          color={status.uploaded ? "success" : "inherit"}
+          color={status.uploaded ? "success" : "primary"}
         >
           {status.text}
         </CustomLoadingButton>
@@ -133,7 +134,7 @@ export const UploadPhoto = ({ values, setValues }) => {
 
   return (
     <>
-      <InputLabel htmlFor="photo">Take Photo</InputLabel>
+      <InputLabel htmlFor="photo">Take Photo (face only)</InputLabel>
       <div {...getRootProps({ className: "dropzone" })}>
         <input
           id="photo"
