@@ -15,6 +15,7 @@ import {
   InputLabel,
   Link,
   MenuItem,
+  OutlinedInput,
   Typography,
 } from "@mui/material";
 import { navigate } from "@reach/router";
@@ -28,13 +29,12 @@ import {
   auth,
   createUserWithEmailAndPassword,
 } from "../../config/firebaseinit";
-import { addUsers, generateAccounts, sendMessage } from "../../config/services";
+import { addUsers, generateAccounts } from "../../config/services";
 import { loading$ } from "../../redux/action";
 import Logo from "../logo";
-import { RedditOutlinedInput, RedditTextField, useStyles } from "../styles";
-import { UploadId, UploadPhoto } from "./uploadid";
-import { CustomLoadingButton } from "../components/styledcomponents";
+import { RedditTextField, useStyles } from "../styles";
 import GetOtp from "./getotp";
+import { UploadId, UploadPhoto } from "./uploadid";
 
 const maritalStatus = ["Single", "Married", "Divorced", "Widowed", "Other"];
 const gender = ["Male", "Female", "Other"];
@@ -102,7 +102,7 @@ export default function SignUp() {
       ...values,
       [event.target.name]: event.target.value,
     });
-   // console.log(event.target.value);
+    // console.log(event.target.value);
   };
 
   const handleChangeDate = (newValue) => {
@@ -203,7 +203,7 @@ export default function SignUp() {
       <form className={classes.form} onSubmit={submitForm}>
         <input type="hidden" name="hidenimage" required />
         <Grid container spacing={2}>
-          <Grid item xs={6} sm={6}>
+          <Grid item xs={12} sm={6}>
             <RedditTextField
               autoComplete="fname"
               name="firstName"
@@ -215,7 +215,7 @@ export default function SignUp() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={6} sm={6}>
+          <Grid item xs={12} sm={6}>
             <RedditTextField
               required
               fullWidth
@@ -241,7 +241,7 @@ export default function SignUp() {
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
               </InputLabel>
-              <RedditOutlinedInput
+              <OutlinedInput
                 id="outlined-adornment-password"
                 type={values.showPassword ? "text" : "password"}
                 value={values.password}
@@ -268,7 +268,7 @@ export default function SignUp() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <RedditTextField
               fullWidth
               select
@@ -290,7 +290,7 @@ export default function SignUp() {
               ))}
             </RedditTextField>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <RedditTextField
               fullWidth
               label="Mobile"
@@ -307,7 +307,7 @@ export default function SignUp() {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <RedditTextField
               fullWidth
               select
@@ -328,7 +328,7 @@ export default function SignUp() {
               ))}
             </RedditTextField>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <RedditTextField
               fullWidth
               select
@@ -349,7 +349,7 @@ export default function SignUp() {
               ))}
             </RedditTextField>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <RedditTextField
               fullWidth
               select
@@ -366,7 +366,7 @@ export default function SignUp() {
               ))}
             </RedditTextField>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <MobileDatePicker
                 label="Date of birth"
@@ -380,10 +380,10 @@ export default function SignUp() {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <UploadId values={values} setValues={setValues} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <UploadPhoto values={values} setValues={setValues} />
           </Grid>
 
