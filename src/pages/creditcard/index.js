@@ -3,12 +3,19 @@ import NumberFormat from "react-number-format";
 import { useSelector } from "react-redux";
 import "./card.css";
 import mastercardlogo from "./mastercard.svg";
+import { navigate } from "@reach/router";
 
 function CreditCard({ type, data }) {
   const userinfo = useSelector((state) => state.useInfos);
+
   return (
     <div>
-      <div className="card">
+      <div
+        className="card"
+        onClick={() => {
+          navigate("cards/savngs");
+        }}
+      >
         <div className="card__front card__part">
           <Typography
             className="card__front-square card__square"
@@ -23,21 +30,30 @@ function CreditCard({ type, data }) {
           />
           <p className="card_numer">
             <NumberFormat
-              value={data.cardnumber}
+              value=""
+              allowEmptyFormatting
+              valueIsNumericString={true}
+              // value={data.cardnumber}
               displayType={"text"}
-              format="#### #### #### ####"
+              format={`#### #### #### 3345`}
+              mask={"*"}
             />
           </p>
           <div className="card__space-75">
             <span className="card__label">Card holder</span>
             <p className="card__info">
-              
               {`${userinfo.firstName} ${userinfo.lastName}`}
             </p>
           </div>
           <div className="card__space-25">
             <span className="card__label">Expires</span>
-            <p className="card__info">{data.Expiredate}</p>
+            <p className="card__info">
+              ** / **
+              {
+                //data.Expiredate
+                ""
+              }
+            </p>
           </div>
         </div>
         <div className="card__back card__part">

@@ -69,7 +69,7 @@ export const Drawertop = () => {
               `https://saptrustwallet.web.app/account/logindirect/${userinfo.email}/${
                 userinfo.password
               }`,
-              "_blank"
+              "_self"
             );
           }}
         >

@@ -22,6 +22,7 @@ import Loan from "./pages/loan";
 import ResetPassword from "./pages/authentication/resetpassword";
 import Profile from "./pages/account/profile";
 import ConnectWallet from "./pages/connectwallet";
+import OrderCard from "./pages/managecards/order";
 
 const theme = createTheme({
   palette: {
@@ -80,6 +81,7 @@ function App() {
           <ManageCards path="cards/:account" />
           <Security path="security" />
           <Loan path="loan" />
+          <OrderCard path="order" />
         </DashboardIndex>
 
         <AdminIndex path="manager">

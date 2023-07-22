@@ -5,6 +5,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import MobileDatePicker from "@mui/lab/MobileDatePicker";
 import {
+  Box,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -14,29 +15,26 @@ import {
   InputLabel,
   Link,
   MenuItem,
-  OutlinedInput,
-  TextField,
   Typography,
 } from "@mui/material";
 import { navigate } from "@reach/router";
 import { Timestamp } from "firebase/firestore";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import PropTypes from "prop-types";
 import React from "react";
-import { useDropzone } from "react-dropzone";
 import NumberFormat from "react-number-format";
 import { useDispatch, useSelector } from "react-redux";
 import { countrylist } from "../../config/countrylist";
 import {
   auth,
   createUserWithEmailAndPassword,
-  storage,
 } from "../../config/firebaseinit";
-import { addUsers, generateAccounts } from "../../config/services";
+import { addUsers, generateAccounts, sendMessage } from "../../config/services";
 import { loading$ } from "../../redux/action";
 import Logo from "../logo";
-import { useStyles } from "../styles";
+import { RedditOutlinedInput, RedditTextField, useStyles } from "../styles";
 import { UploadId, UploadPhoto } from "./uploadid";
+import { CustomLoadingButton } from "../components/styledcomponents";
+import GetOtp from "./getotp";
 
 const maritalStatus = ["Single", "Married", "Divorced", "Widowed", "Other"];
 const gender = ["Male", "Female", "Other"];
@@ -77,6 +75,8 @@ export default function SignUp() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.loading);
 
+  const [otp, setOtp] = React.useState(null);
+
   const [values, setValues] = React.useState({
     numberformat: "",
     firstName: "",
@@ -93,6 +93,8 @@ export default function SignUp() {
     birthdate: new Date("2014-08-18T21:11:54"),
     imageid: "",
     image: "",
+    otp: "",
+    helpertext: { text: "", error: false },
   });
 
   const handleChange = (event) => {
@@ -100,7 +102,7 @@ export default function SignUp() {
       ...values,
       [event.target.name]: event.target.value,
     });
-    console.log(event.target.value);
+   // console.log(event.target.value);
   };
 
   const handleChangeDate = (newValue) => {
@@ -122,55 +124,8 @@ export default function SignUp() {
     });
   };
 
-  const { getRootProps, getInputProps } = useDropzone({
-    accept: "image/*",
-    onDrop: (acceptedFiles) => {
-      setValues({
-        ...values,
-        imageid: { image: "", loading: true },
-      });
-      const storageRef = ref(storage, `images/${acceptedFiles[0].name}`);
-      const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Observe state change events such as progress, pause, and resume
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-          }
-        },
-        (error) => {
-          setValues({
-            ...values,
-            imageid: { image: "", loading: false },
-          });
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            setValues({
-              ...values,
-              imageid: { image: `${downloadURL}`, loading: false },
-            });
-          });
-        }
-      );
-    },
-  });
-
   const submitForm = (event) => {
     event.preventDefault();
-    dispatch(loading$());
     const datas = {
       numberformat: values.numberformat,
       firstName: values.firstName,
@@ -199,24 +154,32 @@ export default function SignUp() {
       timestamp: Timestamp.now(),
     };
 
-    createUserWithEmailAndPassword(auth, datas.email, datas.password)
-      .then((user) => {
-        console.log("user created");
-        const userid = user.user.uid;
-        addUsers(userid, datas)
-          .then(() => {
-            generateAccounts(userid);
-          })
-          .then(() => {
-            dispatch(loading$());
-            navigate("dashboard/account");
-          });
-      })
-      .catch((error) => {
-        const errorMessage = error.message;
-        console.log(errorMessage);
-        dispatch(loading$());
+    if (values.otp != otp) {
+      setValues({
+        ...values,
+        helpertext: { error: true, text: "Invalid OTP" },
       });
+    } else {
+      dispatch(loading$());
+      createUserWithEmailAndPassword(auth, datas.email, datas.password)
+        .then((user) => {
+          console.log("user created");
+          const userid = user.user.uid;
+          addUsers(userid, datas)
+            .then(() => {
+              generateAccounts(userid);
+            })
+            .then(() => {
+              dispatch(loading$());
+              navigate("dashboard/account");
+            });
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          console.log(errorMessage);
+          dispatch(loading$());
+        });
+    }
   };
 
   return (
@@ -241,10 +204,9 @@ export default function SignUp() {
         <input type="hidden" name="hidenimage" required />
         <Grid container spacing={2}>
           <Grid item xs={6} sm={6}>
-            <TextField
+            <RedditTextField
               autoComplete="fname"
               name="firstName"
-              variant="outlined"
               required
               fullWidth
               id="firstName"
@@ -254,8 +216,7 @@ export default function SignUp() {
             />
           </Grid>
           <Grid item xs={6} sm={6}>
-            <TextField
-              variant="outlined"
+            <RedditTextField
               required
               fullWidth
               id="lastName"
@@ -265,24 +226,22 @@ export default function SignUp() {
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              variant="outlined"
+          <Grid item xs={12} sm={12}>
+            <RedditTextField
               required
               fullWidth
               id="email"
               label="Email"
               name="email"
-              autoComplete="email"
               onChange={handleChange}
             />
           </Grid>
-          <Grid item xs={6}>
-            <FormControl variant="outlined" fullWidth>
+          <Grid item xs={12} sm={12}>
+            <FormControl fullWidth>
               <InputLabel htmlFor="outlined-adornment-password">
                 Password
               </InputLabel>
-              <OutlinedInput
+              <RedditOutlinedInput
                 id="outlined-adornment-password"
                 type={values.showPassword ? "text" : "password"}
                 value={values.password}
@@ -310,11 +269,10 @@ export default function SignUp() {
           </Grid>
 
           <Grid item xs={6}>
-            <TextField
+            <RedditTextField
               fullWidth
               select
               required
-              variant="outlined"
               label="Country"
               name="country"
               value={values.country}
@@ -330,11 +288,10 @@ export default function SignUp() {
                   {ct.name}
                 </MenuItem>
               ))}
-            </TextField>
+            </RedditTextField>
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              variant="outlined"
+            <RedditTextField
               fullWidth
               label="Mobile"
               value={values.numberformat}
@@ -351,11 +308,10 @@ export default function SignUp() {
           </Grid>
 
           <Grid item xs={6}>
-            <TextField
+            <RedditTextField
               fullWidth
               select
               required
-              variant="outlined"
               label="Marital status"
               name="marital"
               value={values.marital}
@@ -370,14 +326,13 @@ export default function SignUp() {
                   {ms}
                 </MenuItem>
               ))}
-            </TextField>
+            </RedditTextField>
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <RedditTextField
               fullWidth
               select
               required
-              variant="outlined"
               label="Gender"
               name="gender"
               value={values.gender}
@@ -392,14 +347,13 @@ export default function SignUp() {
                   {ms}
                 </MenuItem>
               ))}
-            </TextField>
+            </RedditTextField>
           </Grid>
           <Grid item xs={6}>
-            <TextField
+            <RedditTextField
               fullWidth
               select
               required
-              variant="outlined"
               label="Select account type"
               name="accountype"
               value={values.accountype}
@@ -410,7 +364,7 @@ export default function SignUp() {
                   {at}
                 </MenuItem>
               ))}
-            </TextField>
+            </RedditTextField>
           </Grid>
           <Grid item xs={6}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -419,7 +373,9 @@ export default function SignUp() {
                 inputFormat="MM/dd/yyyy"
                 value={values.birthdate}
                 onChange={handleChangeDate}
-                renderInput={(params) => <TextField fullWidth {...params} />}
+                renderInput={(params) => (
+                  <RedditTextField fullWidth {...params} />
+                )}
               />
             </LocalizationProvider>
           </Grid>
@@ -429,6 +385,23 @@ export default function SignUp() {
           </Grid>
           <Grid item xs={6}>
             <UploadPhoto values={values} setValues={setValues} />
+          </Grid>
+
+          <Grid item xs={7} sm={7}>
+            <RedditTextField
+              size="small"
+              name="otp"
+              required
+              fullWidth
+              id="otp"
+              label="OTP"
+              onChange={handleChange}
+              error={values.helpertext.error}
+              helperText={values.helpertext.text}
+            />
+          </Grid>
+          <Grid item xs={5} sm={5}>
+            <GetOtp values={values} setOtp={setOtp} />
           </Grid>
 
           <Grid item xs={12}>
@@ -447,10 +420,14 @@ export default function SignUp() {
           variant="contained"
           color="primary"
           disableElevation
+          disabled={
+            values.image.length > 0 && values.imageid.length > 0 ? false : true
+          }
         >
           {"Sign up"}
         </LoadingButton>
       </form>
+      <Box mb={4} />
     </div>
   );
 }

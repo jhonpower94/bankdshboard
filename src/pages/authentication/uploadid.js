@@ -1,15 +1,12 @@
+import { CameraAlt } from "@mui/icons-material";
+import { InputLabel } from "@mui/material";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React from "react";
 import { useDropzone } from "react-dropzone";
 import {
-  auth,
-  createUserWithEmailAndPassword,
-  storage,
+  storage
 } from "../../config/firebaseinit";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { LoadingButton } from "@mui/lab";
 import { CustomLoadingButton } from "../components/styledcomponents";
-import { InputLabel } from "@mui/material";
-import { Badge, Camera, CameraAlt } from "@mui/icons-material";
 
 export const UploadId = ({ values, setValues }) => {
   const [loading, setLoading] = React.useState(false);
@@ -82,7 +79,6 @@ export const UploadId = ({ values, setValues }) => {
           {status.text}
         </CustomLoadingButton>
       </div>
-      <input required value={values.imageid} style={{ opacity: 0 }} />
     </>
   );
 };
@@ -158,7 +154,6 @@ export const UploadPhoto = ({ values, setValues }) => {
           {status.text}
         </CustomLoadingButton>
       </div>
-      <input required value={values.image} style={{ opacity: 0 }} />
     </>
   );
 };

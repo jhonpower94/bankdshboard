@@ -80,14 +80,18 @@ const TransferIndex = ({ account }) => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Stack direction="column" spacing={2}>
-            {["Enable card", "Change Card", "Order card"].map((val, index) => (
+            {[
+              { title: "Order card", disabled: false },
+              { title: "Change Card", disabled: true },
+            ].map((val, index) => (
               <CustomButton
+                disabled={val.disabled}
                 key={index}
                 onClick={() => {
-                  navigate(`../access`);
+                  navigate(`../order`);
                 }}
               >
-                {val}
+                {val.title}
               </CustomButton>
             ))}
           </Stack>
