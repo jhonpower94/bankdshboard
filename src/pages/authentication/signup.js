@@ -277,13 +277,22 @@ export default function SignUp() {
               name="country"
               value={values.country}
               id="standard-select-currency"
-              onChange={handleChange}
+              onChange={(e) => {
+                var result = countrylist.filter(function(o) {
+                  return o.name == e.target.value;
+                });
+                setValues({
+                  ...values,
+                  [e.target.name]: e.target.value,
+                  countrycode: result[0].code,
+                  mobilecode: result[0].dial_code,
+                });
+              }}
             >
               {countrylist.map((ct, index) => (
                 <MenuItem
                   key={index}
                   value={ct.name}
-                  onClick={() => chageCountryCode(ct.code, ct.dial_code)}
                 >
                   {ct.name}
                 </MenuItem>
@@ -291,20 +300,22 @@ export default function SignUp() {
             </RedditTextField>
           </Grid>
           <Grid item xs={12}>
-            <RedditTextField
-              fullWidth
-              label="Mobile"
-              value={values.numberformat}
-              onChange={handleChange}
-              name="numberformat"
-              id="formatted-numberformat-input"
-              InputProps={{
-                inputComponent: NumberFormatCustom,
-              }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
+
+          <NumberFormat
+                format={`${values.mobilecode} ### ### ####`}
+                variant="outlined"
+                fullWidth
+                label="Mobile"
+                name="mobile"
+                allowEmptyFormatting
+                onChange={handleChange}
+                customInput={RedditTextField}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+
+            
           </Grid>
 
           <Grid item xs={12}>
