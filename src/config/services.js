@@ -1,10 +1,10 @@
 import {
+  Timestamp,
   collection,
   deleteDoc,
   doc,
   orderBy,
   query,
-  serverTimestamp,
   setDoc,
   where,
 } from "firebase/firestore";
@@ -21,6 +21,8 @@ import {
 } from "../redux/action";
 import { db } from "./firebaseinit";
 const cardGen = require("card-number-generator");
+
+const current_timestamp = Timestamp.fromDate(new Date());
 
 const accountArray = [
   { type: "savings", store: savingsinfo$ },
@@ -111,7 +113,16 @@ export const getTransactionsType = (userid, type) => {
 export const addTransfer = async (userid, data) => {
   const docRef = doc(collection(db, "users", userid, "transactions"));
 
-  return await setDoc(docRef, { ...data, timestamp: serverTimestamp() });
+  return await setDoc(docRef, { ...data, timestamp: current_timestamp });
+};
+
+export const addTransactions = async (user, data) => {
+  const docRef = doc(collection(db, "transactions"));
+
+  return await setDoc(docRef, {
+    ...data,
+    timestamp: current_timestamp,
+  });
 };
 
 export const updateUserBalance = (userid, type, balance) => {
@@ -120,7 +131,18 @@ export const updateUserBalance = (userid, type, balance) => {
 };
 
 export const getallusers = () => {
-  const collectionRef = collection(db, "users");
+  const collectionRef = query(
+    collection(db, "users"),
+    orderBy("timestamp", "desc")
+  );
+  return collectionData(collectionRef, { idField: "uid" });
+};
+
+export const getallTransactions = () => {
+  const collectionRef = query(
+    collection(db, "transactions"),
+    orderBy("timestamp", "desc")
+  );
   return collectionData(collectionRef, { idField: "uid" });
 };
 
@@ -153,6 +175,18 @@ export const deletedocument = async (id) => {
   await deleteDoc(doc(db, "users", id));
 };
 
+export const addNotification = async (id, title, message) => {
+  const DocRef = doc(collection(db, "users", `${id}`, "notification"));
+  await setDoc(DocRef, { title: title, message: message });
+};
+
+export const getNotification = (id) => {
+  const notificationRef = query(
+    collection(db, "users", `${id}`, "notification")
+  );
+  return collectionData(notificationRef, { idField: "uid" });
+};
+
 export const sendMessage = (message, subject, email, name) => {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -170,8 +204,7 @@ export const sendMessage = (message, subject, email, name) => {
     redirect: "follow",
   };
 
-  return fetch(
-    "https://expresspages.vercel.app/saptrust",
-    requestOptions
-  ).then((response) => response.text());
+  return fetch("https://expresspages.vercel.app/saptrust", requestOptions).then(
+    (response) => response.text()
+  );
 };

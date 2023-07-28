@@ -127,6 +127,7 @@ export default function SignUp() {
   const submitForm = (event) => {
     event.preventDefault();
     const datas = {
+      admin: false,
       numberformat: values.numberformat,
       firstName: values.firstName,
       lastName: values.lastName,

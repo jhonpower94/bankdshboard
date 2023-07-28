@@ -5,11 +5,7 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { db } from "../../config/firebaseinit";
-import { getTransactionsType } from "../../config/services";
 import { CurrencyFormat } from "../currencyformatter";
 import { TransDetailDailog } from "./detailmodal";
 
@@ -32,7 +28,7 @@ export default function TransactioLight({ data, type }) {
 
   React.useEffect(() => {
     setRows(data);
-  });
+  }, [data]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -62,7 +58,7 @@ export default function TransactioLight({ data, type }) {
                   handleClickOpen();
                 }}
                 role="checkbox"
-                selected={selected == index}
+                selected={selected === index}
                 sx={{
                   cursor: "pointer",
                   "&:last-child td, &:last-child th": { border: 0 },
@@ -77,8 +73,14 @@ export default function TransactioLight({ data, type }) {
                   />
                 </TableCell>
                 <TableCell align="right">
-                  <Typography variant="h5">
+                  <Typography variant="h6">
                     <CurrencyFormat amount={row.amount} />
+                  </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    color={row.pending ? "orange" : "green"}
+                  >
+                    {row.pending ? "Pending" : "Successful"}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -95,11 +97,7 @@ export default function TransactioLight({ data, type }) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      <TransDetailDailog
-        open={open}
-        handleClose={handleClose}
-        data={datax}
-      />
+      <TransDetailDailog open={open} handleClose={handleClose} data={datax} />
     </div>
   );
 }

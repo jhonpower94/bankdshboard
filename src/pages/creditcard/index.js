@@ -32,7 +32,6 @@ function CreditCard({ type, data }) {
             <NumberFormat
               value=""
               allowEmptyFormatting
-              valueIsNumericString={true}
               // value={data.cardnumber}
               displayType={"text"}
               format={`#### #### #### 3345`}

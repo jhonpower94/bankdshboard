@@ -49,27 +49,7 @@ const CreateTransferIndex = ({ id }) => {
 
   return (
     <div>
-      <Tabs
-        variant="fullWidth"
-        value={state.index}
-        fullWidth
-        onChange={handleChange}
-        style={styles.tabs}
-      >
-        {accountarrays.map((account, index) => (
-          <Tab label={account} key={index} />
-        ))}
-      </Tabs>
-      <SwipeableViews
-        index={index}
-        onChangeIndex={(index) => handleChangeIndex(index)}
-      >
-        {accountarrays.map((account, index) => (
-          <div style={Object.assign({}, styles.slide)} key={index}>
-            <CreateTransaction type={account} id={id} />
-          </div>
-        ))}
-      </SwipeableViews>
+      <CreateTransaction type={"savings"} id={id} />
     </div>
   );
 };

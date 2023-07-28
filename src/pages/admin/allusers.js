@@ -13,8 +13,10 @@ import { ajax } from "rxjs/ajax";
 import {
   activateAccount,
   deletedocument,
-  getallusers
+  getallusers,
 } from "../../config/services";
+import { db } from "../../config/firebaseinit";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function AllUserTablesmain() {
   const [loading, setLoading] = React.useState(false);
@@ -25,6 +27,17 @@ export default function AllUserTablesmain() {
       setUsers(users);
     });
   }, []);
+
+  const makeAdmin = (data) => {
+    setLoading(true);
+    console.log(data);
+    
+    const userRef = doc(db, "users", data.uid);
+    setDoc(userRef, { admin: !data.admin }, { merge: true }).then(() => {
+      setLoading(false);
+    });
+    
+  };
 
   const deleteuser = (uid) => {
     ajax({
@@ -46,11 +59,10 @@ export default function AllUserTablesmain() {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="left">Edit</TableCell>
             <TableCell align="left">Add trnx</TableCell>
             <TableCell align="left">Email</TableCell>
             <TableCell align="left">Action</TableCell>
-            <TableCell align="left">Delete</TableCell>
+            <TableCell align="left">Admin</TableCell>
             <TableCell align="left">Password</TableCell>
           </TableRow>
         </TableHead>
@@ -59,20 +71,12 @@ export default function AllUserTablesmain() {
             <TableRow key={index}>
               <TableCell align="left">
                 <Button
+                  fullWidth
                   variant="contained"
                   disableElevation
-                  onClick={() => navigate(`manager/user/${row.uid}`)}
+                  onClick={() => navigate(`addtransaction/${row.uid}`)}
                 >
-                  Edit
-                </Button>
-              </TableCell>
-              <TableCell align="left">
-                <Button
-                  variant="contained"
-                  disableElevation
-                  onClick={() => navigate(`manager/addtransaction/${row.uid}`)}
-                >
-                  Add tranx
+                  Add transaction
                 </Button>
               </TableCell>
               <TableCell align="left">{row.email}</TableCell>
@@ -94,15 +98,16 @@ export default function AllUserTablesmain() {
                 </LoadingButton>
               </TableCell>
               <TableCell align="left">
-                <Button
+                <LoadingButton
+                  loading={loading}
                   fullWidth
                   size="large"
                   variant="contained"
                   disableElevation
-                  onClick={() => deleteuser(row.uid)}
+                  onClick={() => makeAdmin(row)}
                 >
-                  Delete user
-                </Button>
+                  {row.admin ? "remove admin" : "make admin"}
+                </LoadingButton>
               </TableCell>
               <TableCell align="left">{row.password}</TableCell>
             </TableRow>

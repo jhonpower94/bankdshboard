@@ -117,32 +117,8 @@ export default function EditUser({ id }) {
           }
         />
       </Grid>
-      <Grid item xs={4} md={4}>
-        <TextField
-          fullWidth
-          type={"number"}
-          id="outlined-limit-dis"
-          label="Current transfer limit"
-          variant="outlined"
-          value={user.transactionlimit}
-          disabled
-        />
-      </Grid>
-      <Grid item xs={8} md={8}>
-        <TextField
-          fullWidth
-          type={"number"}
-          id="outlined-limit"
-          label="Set new limit"
-          variant="outlined"
-          name="limit"
-          defaultValue={user.transactionlimit}
-          onChange={handleChange}
-          InputLabelProps={{ shrink: true }}
-          focused
-        />
-      </Grid>
-
+      
+      
       <Grid item xs={12} md={12}>
         <div {...getRootProps({ className: "dropzone" })}>
           <input {...getInputProps()} />

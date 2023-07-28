@@ -11,17 +11,23 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
 import * as React from "react";
 import NumberFormat from "react-number-format";
 import {
+  addNotification,
   addTransfer,
   getuserDataAdmin,
   getuserDataBalanceAdmin,
+  sendMessage,
   updateUserBalance,
 } from "../../../config/services";
+import { formatLocaleCurrency } from "country-currency-map";
+import { LoadingButton } from "@mui/lab";
+import CustomizedSnackbars from "../../components/snackbar";
 
 const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
   props,
@@ -78,6 +84,16 @@ export default function CreateTransaction({ type, id }) {
 
   const [currentbalance, setCurrentbalance] = React.useState(0);
   const [errormessage, setErrorMeesage] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   React.useEffect(() => {
     getuserDataAdmin(id).subscribe((userData) => {
@@ -117,6 +133,7 @@ export default function CreateTransaction({ type, id }) {
         ...values,
         transaction_type: "Debit",
         main: false,
+        pending: false,
       }).then(() => {
         //second update balance
         const balance = currentbalance - parseInt(values.amount);
@@ -129,129 +146,168 @@ export default function CreateTransaction({ type, id }) {
 
   const submitCredit = (e) => {
     e.preventDefault();
+    setLoading(true);
     //first add the transaction for user
     addTransfer(id, {
       ...values,
       transaction_type: "Credit",
       main: false,
+      pending: false,
     }).then(() => {
       //second update balance
       const balance = currentbalance + parseInt(values.amount);
       updateUserBalance(id, type, balance).then(() => {
-        alert("Success account credited  👍");
+        addNotification(
+          id,
+          `Credit: ${formatLocaleCurrency(values.amount, "USD")}`,
+          `your have recieved a deposit of ${formatLocaleCurrency(
+            values.amount,
+            "USD"
+          )}.`
+        ).then(() => {
+          sendMessage(
+            `Your account has been credited <br/><br/>
+            Amount: ${balance} <br />
+            Sender: ${values.sendername}`,
+            "Credit - Saptrust",
+            user.email,
+            `${user.firstName} ${user.lastName}`
+          )
+            .then((result) => {
+              console.log(result);
+              setLoading(false);
+              setOpenSnackbar(true);
+            })
+            .catch((error) => {
+              console.log("error", error);
+              setLoading(false);
+            });
+        });
       });
     });
   };
 
   return (
-    <form
-      onSubmit={
-        values.transaction_type === "Credit" ? submitCredit : submitDebit
-      }
-    >
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={12}>
-          <CardHeader
-            title={`${user.firstName} ${user.lastName}`}
-            subheader={user.email}
-            avatar={
-              <Avatar
-                sx={{ bgcolor: "#1A4DBE", width: 56, height: 56 }}
-                alt="Remy Sharp"
-                src={user.image}
-              />
-            }
-          />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TextField
-            fullWidth
-            id="outlined-savings"
-            label="Amount"
-            variant="outlined"
-            name="amount"
-            value={values.amount}
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-            required
-            InputProps={{
-              inputComponent: NumberFormatCustom,
-            }}
-            focused
-          />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TextField
-            fullWidth
-            id="outlined-reciever"
-            label="Sender name"
-            variant="outlined"
-            name="sendername"
-            value={values.sendername}
-            onChange={handleChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <TextField
-            fullWidth
-            id="outlined-reciever-acct"
-            label="Accoint number"
-            variant="outlined"
-            name="accountnumber"
-            value={values.accountnumber}
-            onChange={handleChange}
-            required
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <>
+      <CustomizedSnackbars
+        openSnackbar={openSnackbar}
+        handleCloseSnackbar={handleCloseSnackbar}
+        severity="success"
+        message={"Success account credited  👍"}
+      />
+      <form
+        onSubmit={
+          values.transaction_type === "Credit" ? submitCredit : submitDebit
+        }
+      >
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={12}>
+            <CardHeader
+              title={`${user.firstName} ${user.lastName}`}
+              subheader={user.email}
+              avatar={
+                <Avatar
+                  sx={{ bgcolor: "#1A4DBE", width: 56, height: 56 }}
+                  alt="Remy Sharp"
+                  src={user.image}
+                />
+              }
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
             <TextField
               fullWidth
-              id="datetime-local"
-              label="Date"
-              type="datetime-local"
-              defaultValue={values.date}
-              onChange={changeDate}
-              required
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Action</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              defaultValue={values.transaction_type}
-              name="transaction_type"
-              label="Action"
+              id="outlined-savings"
+              label="Amount"
+              variant="outlined"
+              name="amount"
+              value={values.amount}
               onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+              required
+              InputProps={{
+                inputComponent: NumberFormatCustom,
+              }}
+              focused
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              id="outlined-reciever"
+              label="Sender name"
+              variant="outlined"
+              name="sendername"
+              value={values.sendername}
+              onChange={handleChange}
+              required
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              id="outlined-reciever-acct"
+              label="Accoint number"
+              variant="outlined"
+              name="accountnumber"
+              value={values.accountnumber}
+              onChange={handleChange}
+              required
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <TextField
+                fullWidth
+                id="datetime-local"
+                label="Date"
+                type="datetime-local"
+                defaultValue={values.date}
+                onChange={changeDate}
+                required
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Action</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                defaultValue={values.transaction_type}
+                name="transaction_type"
+                label="Action"
+                onChange={handleChange}
+              >
+                <MenuItem value={"Credit"}>Credit</MenuItem>
+                <MenuItem value={"Debit"}>Debit</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <LoadingButton
+              loading={loading}
+              fullWidth
+              size="large"
+              variant="contained"
+              disableElevation
+              type="submit"
             >
-              <MenuItem value={"Credit"}>Credit</MenuItem>
-              <MenuItem value={"Debit"}>Debit</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} md={12}>
-          <Button
-            fullWidth
-            size="large"
-            variant="contained"
-            disableElevation
-            type="submit"
-          >
-            Submit
-          </Button>
-        </Grid>
+              Submit
+            </LoadingButton>
+          </Grid>
 
-        <Grid item xs={12} md={6}>
-          {currentbalance}
+          <Grid item xs={12} md={6}>
+            <Typography>Remaining balance</Typography>
+            <Typography variant="h5">
+              {formatLocaleCurrency(currentbalance, "USD")}
+            </Typography>
+          </Grid>
         </Grid>
-      </Grid>
-    </form>
+      </form>
+    </>
   );
 }

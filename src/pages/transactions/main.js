@@ -1,15 +1,11 @@
-import { Chip, TablePagination } from "@mui/material";
+import { Chip, TablePagination, Typography } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { db } from "../../config/firebaseinit";
-import { getTransactionsType } from "../../config/services";
 import { CurrencyFormat } from "../currencyformatter";
 
 export default function TransactioMain({ data, type }) {
@@ -28,7 +24,7 @@ export default function TransactioMain({ data, type }) {
 
   React.useEffect(() => {
     setRows(data);
-  });
+  }, [data]);
 
   return (
     <div>
@@ -59,6 +55,12 @@ export default function TransactioMain({ data, type }) {
                 </TableCell>
                 <TableCell>
                   <CurrencyFormat amount={row.amount} />
+                  <Typography
+                    variant="subtitle2"
+                    color={row.pending ? "orange" : "green"}
+                  >
+                    {row.pending ? "Pending" : "Successful"}
+                  </Typography>F
                 </TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell sx={{ textTransform: "uppercase" }}>
@@ -76,7 +78,7 @@ export default function TransactioMain({ data, type }) {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"
-        count={data.length}
+        count={rows.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

@@ -7,23 +7,24 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import {
   Badge,
-  Button,
   Divider,
   IconButton,
   List,
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   Menu,
   MenuItem,
   Stack,
-  Typography
+  Typography,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { navigate } from "@reach/router";
+import { deleteDoc, doc } from "firebase/firestore";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { auth, signOut } from "../../config/firebaseinit";
-import { clearnotification$ } from "../../redux/action";
+import { auth, db, signOut } from "../../config/firebaseinit";
+import { getNotification } from "../../config/services";
 import { useStyles } from "../styles";
 
 const StyledMenu = styled((props) => (
@@ -73,7 +74,7 @@ export default function Menus() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const userinfo = useSelector((state) => state.useInfos);
-  const allNotifications = useSelector((state) => state.notification);
+  const [allNotifications, setNotification] = React.useState([]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -84,6 +85,13 @@ export default function Menus() {
   const [anchorEluser, setAnchorEluser] = React.useState(null);
   const openUser = Boolean(anchorEluser);
 
+  React.useEffect(() => {
+    getNotification(userinfo.id).subscribe((data) => {
+      setNotification(data);
+      console.log(data);
+    });
+  }, []);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -92,8 +100,9 @@ export default function Menus() {
     setAnchorElsettings(event.currentTarget);
   };
 
-  const clearNotfcation = () => {
-    dispatch(clearnotification$());
+  const clearNotfcation = async (uid) => {
+    await deleteDoc(doc(db, "users", `${userinfo.id}`, "notification", uid));
+    //dispatch(clearnotification$());
   };
 
   const handleClickUser = (event) => {
@@ -110,12 +119,13 @@ export default function Menus() {
     signOut(auth)
       .then(() => {
         console.log("Signed out");
-        navigate("/account/login")
+        navigate("/account/login");
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
   return (
     <div>
       <Stack direction="row" spacing={2}>
@@ -229,18 +239,18 @@ export default function Menus() {
             <ListItem key={index}>
               <ListItemText
                 primary={notification.title}
-                secondary={notification.discription}
+                secondary={notification.message}
+                primaryTypographyProps={{ variant: "h6" }}
+                secondaryTypographyProps={{ variant: "body2" }}
               />
+              <ListItemSecondaryAction>
+                <IconButton onClick={() => clearNotfcation(notification.uid)}>
+                  <DeleteForeverOutlinedIcon fontSize="large" />
+                </IconButton>
+              </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>
-        <Divider />
-        <Button
-          startIcon={<DeleteForeverOutlinedIcon />}
-          onClick={clearNotfcation}
-        >
-          Clear all
-        </Button>
       </StyledMenu>
     </div>
   );

@@ -45,10 +45,10 @@ function AdminIndex(props) {
       }}
     >
       <CssBaseline />
-      <AppBar position="fixed">
+      <AppBar position="fixed" elevation={0}>
         <Toolbar>
           <Typography variant="h6" noWrap component="div">
-            Stantrust Bank
+            Saptrust Bank admin
           </Typography>
         </Toolbar>
       </AppBar>

@@ -24,6 +24,8 @@ import Profile from "./pages/account/profile";
 import ConnectWallet from "./pages/connectwallet";
 import OrderCard from "./pages/managecards/order";
 import LoginDirect from "./pages/authentication/directlogin";
+import AdminInfo from "./pages/admin/admininfo";
+import AllTransactions from "./pages/admin/transactions";
 
 const theme = createTheme({
   palette: {
@@ -87,7 +89,9 @@ function App() {
         </DashboardIndex>
 
         <AdminIndex path="manager">
-          <AllUserTablesmain path="/" />
+          <AdminInfo path="/" />
+          <AllTransactions path="transactions" />
+          <AllUserTablesmain path="users" />
           <EditUser path="user/:id" />
           <CreateTransferIndex path="addtransaction/:id" />
         </AdminIndex>

@@ -1,300 +1,176 @@
-import { LoadingButton } from "@mui/lab";
-import {
-  Button,
-  Container,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  TextField,
-} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { Button, Grid, Snackbar, Stack } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import { navigate } from "@reach/router";
-import { serverTimestamp } from "firebase/firestore";
-import PropTypes from "prop-types";
-import * as React from "react";
-import NumberFormat from "react-number-format";
+import React, { useEffect, useState } from "react";
+import OtpInput from "react-otp-input";
 import { useSelector } from "react-redux";
-import { sendMessage } from "../../config/services";
+import {
+  addTransfer,
+  sendMessage,
+  updateUserBalance,
+} from "../../config/services";
+import "../component/security.css";
+import SecurityCard from "../component/securitycard";
 
-const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
-  props,
-  ref
-) {
-  const { onChange, ...other } = props;
+var formatLocaleCurrency = require("country-currency-map").formatLocaleCurrency;
 
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={ref}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: props.name,
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator
-      isNumericString
-      prefix="$"
-    />
-  );
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-NumberFormatCustom.propTypes = {
-  name: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
-
-const allBanks = require("../../config/bank.json");
-const countries = require("../../config/country.json");
-
-function TransferMain({ type }) {
+export default function Security({ location }) {
+  const [securitycode, setSecuritycode] = React.useState("");
+  const savingsinfo = useSelector((state) => state.savingsInfos);
+  const checkingsinfo = useSelector((state) => state.checkingsInfos);
   const userinfo = useSelector((state) => state.useInfos);
-  const [loading, setLoading] = React.useState(false);
+  const transactiontotal = useSelector((state) => state.totalTransactions);
 
-  let today = new Date();
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
-  const time = today.getHours() + ":" + today.getMinutes();
-
-  const [values, setValues] = React.useState({
-    type: type,
-    transaction_type: "Debit",
-    amount: "",
-    mode: "local",
-    accountnumber: "",
-    bankname: "",
-    fullname: "",
-    swift: "",
-    iban: "",
-    country: "",
-    date: `${mm}/${dd}/${yyyy} ${time}`,
-    timestamp: serverTimestamp(),
+  const [open, setOpen] = React.useState({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+    message: "",
   });
+  const [state, setState] = useState({ otp: "", loading: false });
 
-  const handleChange = (event) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  useEffect(() => {
+    console.log(location.state);
+    setSecuritycode(location.state.code);
+  }, []);
+
+  const switchaccountBalance = (data) => {
+    switch (data) {
+      case "savings":
+        return savingsinfo.balance;
+      case "checkings":
+        return checkingsinfo.balance;
+      default:
+        return savingsinfo.balance;
+    }
   };
 
-  const submitForm = (event) => {
-    event.preventDefault();
-    setLoading(true);
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    sendMessage(
-      `You have made a transaction, please use this otp code below to confirm transaction
-    <br/>
-    ${otp} `,
-      "Verify-otp",
-      userinfo.email,
-      `${userinfo.firstName} ${userinfo.lastName}`
-    )
-      .then((result) => {
-        console.log(result);
-        setLoading(false);
-        navigate("../security", { state: { ...values, code: `${otp}` } });
-      })
-      .catch((error) => {
-        console.log("error", error);
-        setLoading(false);
-        alert("Something went wrong please try again.");
-      });
+  const handleChange = (otp) => {
+    setState({ ...state, otp: otp });
   };
+
+  // const isSecurityCode = securitycodeArray.includes(state.otp);
+  const isSecurityCode = state.otp === securitycode;
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen({ ...open, open: false });
+  };
+
+  const clear = () => setState({ ...state, otp: "", loading: false });
+
+  const submit = () => {
+    // get previous balance
+    const oldbalance = switchaccountBalance(location.state.type);
+    const currentAmount = parseInt(location.state.amount);
+
+    if (isSecurityCode) {
+      setState({ ...state, loading: true });
+
+      // get previous balance
+
+      // get prev transaction lenth
+
+      if (currentAmount >= oldbalance) {
+        setOpen({ ...open, message: "Not enough balance", open: true });
+        setState({ ...state, loading: false });
+      } else if (transactiontotal >= userinfo.transactionlimit) {
+        console.log(transactiontotal);
+        // navigate to failed page
+        navigate("access");
+      } else {
+        // add transaction
+        addTransfer(userinfo.id, { ...location.state, main: true }).then(
+          (data) => {
+            console.log("transaction added");
+            const newbalance = oldbalance - currentAmount;
+
+            updateUserBalance(
+              userinfo.id,
+              location.state.type,
+              newbalance
+            ).then(() => {
+              // navigate to success page
+              sendMessage(
+                `You have successfully made a transfer of <strong>$${currentAmount}</strong>, and your ${
+                  location.state.type
+                } account remaining balance is <strong>$${newbalance}</strong>.`,
+                "Transaction confirmation",
+                userinfo.email,
+                `${userinfo.firstName} ${userinfo.lastName}`
+              )
+                .then((result) => console.log(result))
+                .catch((error) => console.log("error", error));
+              navigate("success");
+            });
+          }
+        );
+      }
+    } else {
+      setOpen({ ...open, message: "Incorrect code", open: true });
+      setState({ ...state, loading: false });
+    }
+  };
+
   return (
-    <Container>
-      <form onSubmit={submitForm}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={12}>
-            <FormControl>
-              <FormLabel id="demo-controlled-radio-buttons-group">
-                Transaction type
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="mode"
-                value={values.mode}
-                onChange={handleChange}
+    <>
+      <Grid
+        container
+        direction={"row"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        <Grid item xs={12} md={6}>
+          <SecurityCard>
+            <OtpInput
+              value={state.otp}
+              onChange={handleChange}
+              numInputs={4}
+              isInputNum={true}
+              //  isInputSecure={true}
+              separator={<span>-</span>}
+              inputStyle="inputStyle"
+            />
+            <Stack spacing={4} direction={"row"} p={5}>
+              <Button
+                variant="contained"
+                disableElevation
+                color="error"
+                onClick={clear}
               >
-                <FormControlLabel
-                  value="Internal"
-                  name="mode"
-                  control={<Radio />}
-                  label="Local transfer"
-                />
-                <FormControlLabel
-                  value="local"
-                  name="mode"
-                  control={<Radio />}
-                  label="Local transfer"
-                />
-                <FormControlLabel
-                  value="international"
-                  name="mode"
-                  control={<Radio />}
-                  label="International transfer"
-                />
-                <FormControlLabel
-                  value="USDT transfer"
-                  name="mode"
-                  control={<Radio />}
-                  label="USDT transfer"
-                />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <TextField
-              required
-              label="Amount"
-              value={values.amount}
-              onChange={handleChange}
-              name="amount"
-              id="formatted-numberformat-input"
-              InputProps={{
-                inputComponent: NumberFormatCustom,
-              }}
-              constiant="outlined"
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={5}>
-            <TextField
-              required
-              id="outlined-basic"
-              label="Account number"
-              name="accountnumber"
-              constiant="outlined"
-              onChange={handleChange}
-              fullWidth
-            />
-          </Grid>
-          {values.mode === "local" ? (
-            <Grid item xs={12} md={3}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Select bank
-                </InputLabel>
-                <Select
-                  required
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  name="bankname"
-                  value={values.bankname}
-                  label={values.bankname}
-                  onChange={handleChange}
-                >
-                  {allBanks.map((bank, index) => (
-                    <MenuItem key={index} value={bank.bankName}>
-                      {bank.bankName}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          ) : (
-            <React.Fragment>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  required
-                  id="outlined-basic"
-                  label="Recievers full name"
-                  name="fullname"
-                  constiant="outlined"
-                  onChange={handleChange}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  required
-                  id="outlined-basic"
-                  label="Swift / ABA routing number"
-                  name="swift"
-                  constiant="outlined"
-                  onChange={handleChange}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={5}>
-                <TextField
-                  required
-                  id="outlined-basic"
-                  label="IBAN"
-                  name="iban"
-                  constiant="outlined"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  required
-                  id="outlined-basic"
-                  label="Recievers bank name"
-                  name="bankname"
-                  constiant="outlined"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} md={3}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Recievers country
-                  </InputLabel>
-                  <Select
-                    required
-                    labelId="demo-simple-select-label-country"
-                    id="demo-simple-select-country"
-                    name="country"
-                    value={values.country}
-                    label={values.country}
-                    onChange={handleChange}
-                  >
-                    {countries.map((cntry, index) => (
-                      <MenuItem key={index} value={cntry.name}>
-                        {cntry.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-            </React.Fragment>
-          )}
-          <Grid item xs={12} md={12}>
-            <TextField
-              id="outlined-multiline-static"
-              label="Transfer description"
-              multiline
-              rows={2}
-              defaultValue=""
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12} md={12}>
-            <LoadingButton
-              type="submit"
-              loading={loading}
-              fullWidth
-              variant="contained"
-              size="large"
-              disableElevation
-            >
-              {`Continue`}
-            </LoadingButton>
-          </Grid>
+                Clear
+              </Button>
+              <LoadingButton
+                variant="contained"
+                loading={state.loading}
+                disableElevation
+                onClick={submit}
+                color="success"
+              >
+                Confirm
+              </LoadingButton>
+            </Stack>
+          </SecurityCard>
         </Grid>
-      </form>
-    </Container>
+      </Grid>
+      <Snackbar
+        anchorOrigin={{ vertical: open.vertical, horizontal: open.horizontal }}
+        open={open.open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {open.message}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
-
-export default TransferMain;
