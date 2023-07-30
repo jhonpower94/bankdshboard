@@ -1,6 +1,7 @@
+import SearchIcon from "@mui/icons-material/Search";
 import { LoadingButton } from "@mui/lab";
+import { Box, IconButton, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,19 +9,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { navigate } from "@reach/router";
-import * as React from "react";
-import { ajax } from "rxjs/ajax";
-import {
-  activateAccount,
-  deletedocument,
-  getallusers,
-} from "../../config/services";
-import { db } from "../../config/firebaseinit";
 import { doc, setDoc } from "firebase/firestore";
+import * as React from "react";
+import { db } from "../../config/firebaseinit";
+import { activateAccount, getallusers } from "../../config/services";
 
 export default function AllUserTablesmain() {
   const [loading, setLoading] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [users, setUsers] = React.useState([]);
+  const [usersConst, setUsersConst] = React.useState([]);
+
   React.useEffect(() => {
     getallusers().subscribe((users) => {
       console.log(users);
@@ -31,31 +30,46 @@ export default function AllUserTablesmain() {
   const makeAdmin = (data) => {
     setLoading(true);
     console.log(data);
-    
+
     const userRef = doc(db, "users", data.uid);
     setDoc(userRef, { admin: !data.admin }, { merge: true }).then(() => {
       setLoading(false);
     });
-    
   };
 
-  const deleteuser = (uid) => {
-    ajax({
-      url: "https://reinvented-natural-catshark.glitch.me/admin/delete",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: {
-        uid: uid,
-      },
-    }).subscribe(() => {
-      deletedocument(uid).then(() => console.log("deleted"));
+  const handleChange = (e) => {
+    setSearchQuery(e.target.value);
+    setUsers(usersConst);
+    // console.log(e.target.value);
+  };
+
+  const search = (e) => {
+    let filteredUsers = users.filter((user) => {
+      return user.email === searchQuery || user.accountnumber === searchQuery;
     });
+    setUsers(filteredUsers);
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
+      <Box display={"flex"} justifyContent={"center"} p={2}>
+        <TextField
+          id="search-bar"
+          label="Search email or id"
+          variant="outlined"
+          onChange={handleChange}
+          size="small"
+          fullWidth
+        />
+        <IconButton
+          onClick={search}
+          sx={{ ml: 1 }}
+          type="submit"
+          aria-label="search"
+        >
+          <SearchIcon />
+        </IconButton>
+      </Box>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>

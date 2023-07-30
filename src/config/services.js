@@ -48,6 +48,12 @@ export const generateAccounts = (docid) => {
     const generateCvv = Math.floor(Math.random() * 1000 + 1);
     const generatecardnumber = cardGen({ issuer: "MasterCard" });
 
+    const userRef = doc(db, "users", `${docid}`);
+    setDoc(
+      userRef,
+      { accountnumber: `00${generateAcnumber}` },
+      { merge: true }
+    );
     const querydoc = doc(db, "users", `${docid}`, "account", value.type);
     setDoc(querydoc, {
       ...cardinfo,
