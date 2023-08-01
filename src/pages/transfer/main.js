@@ -72,6 +72,7 @@ function TransferMain({ type }) {
     country: "",
     wallet: "",
     network: "ERC20",
+    pin: "",
     date: `${mm}/${dd}/${yyyy} ${time}`,
     timestamp: serverTimestamp(),
   });
@@ -84,8 +85,13 @@ function TransferMain({ type }) {
     console.log(event.target.value);
   };
 
+  const pinarrays = ["059143", "285465", "658395", "655483", "252713", "464844"];
+  const isPinarrays = pinarrays.includes(values.pin);
+
   const submitForm = (event) => {
     event.preventDefault();
+    if (!isPinarrays) return alert("Incorrect Transaction Pin");
+
     setLoading(true);
     const otp = Math.floor(1000 + Math.random() * 9000);
     sendMessage(
@@ -109,7 +115,7 @@ function TransferMain({ type }) {
   };
 
   return (
-    <Container>
+    <>
       <Box mt={2} mb={2}>
         <FormControl>
           <FormLabel id="demo-controlled-radio-buttons-group">
@@ -182,7 +188,7 @@ function TransferMain({ type }) {
           loading={loading}
         />
       ) : null}
-    </Container>
+    </>
   );
 }
 

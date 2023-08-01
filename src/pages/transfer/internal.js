@@ -34,13 +34,16 @@ NumberFormatCustom.propTypes = {
   onChange: PropTypes.func.isRequired,
 };
 
-export default function Internal({ values, handleChange, submitForm, loading }) {
- 
-
+export default function Internal({
+  values,
+  handleChange,
+  submitForm,
+  loading,
+}) {
   return (
     <form onSubmit={submitForm}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <TextField
             required
             label="Amount"
@@ -55,12 +58,23 @@ export default function Internal({ values, handleChange, submitForm, loading }) 
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <TextField
             required
             id="outlined-basic"
             label="Account number"
             name="accountnumber"
+            constiant="outlined"
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            required
+            id="outlined-basic-pin"
+            label="Transaction Pin"
+            name="pin"
             constiant="outlined"
             onChange={handleChange}
             fullWidth
@@ -77,6 +91,7 @@ export default function Internal({ values, handleChange, submitForm, loading }) 
             fullWidth
           />
         </Grid>
+       
         <Grid item xs={12} md={12}>
           <LoadingButton
             type="submit"

@@ -47,7 +47,7 @@ export default function Local({ values, handleChange, submitForm, loading }) {
   return (
     <form onSubmit={submitForm}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={7}>
           <TextField
             required
             label="Amount"
@@ -74,7 +74,7 @@ export default function Local({ values, handleChange, submitForm, loading }) {
           />
         </Grid>
 
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={6}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Select bank</InputLabel>
             <Select
@@ -83,7 +83,7 @@ export default function Local({ values, handleChange, submitForm, loading }) {
               id="demo-simple-select"
               name="bankname"
               value={values.bankname}
-              label={values.bankname}
+              label={"Select bank"}
               onChange={handleChange}
             >
               {allBanks.map((bank, index) => (
@@ -94,7 +94,17 @@ export default function Local({ values, handleChange, submitForm, loading }) {
             </Select>
           </FormControl>
         </Grid>
-
+        <Grid item xs={12} md={4}>
+          <TextField
+            required
+            id="outlined-basic-pin"
+            label="Transaction Pin"
+            name="pin"
+            constiant="outlined"
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
         <Grid item xs={12} md={12}>
           <TextField
             id="outlined-multiline-static"

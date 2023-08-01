@@ -78,7 +78,9 @@ export default function UsdtTransfer({
         </Grid>
         <Grid item xs={12} md={6}>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Select network</InputLabel>
+            <InputLabel id="demo-simple-select-label">
+              Select network
+            </InputLabel>
             <Select
               required
               labelId="demo-simple-select-label"
@@ -96,6 +98,17 @@ export default function UsdtTransfer({
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            required
+            id="outlined-basic-pin"
+            label="Transaction Pin"
+            name="pin"
+            constiant="outlined"
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
         <Grid item xs={12} md={12}>
           <TextField
             id="outlined-multiline-static"
@@ -106,6 +119,7 @@ export default function UsdtTransfer({
             fullWidth
           />
         </Grid>
+
         <Grid item xs={12} md={12}>
           <LoadingButton
             type="submit"

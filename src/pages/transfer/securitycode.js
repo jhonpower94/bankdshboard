@@ -1,5 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Button, Grid, Snackbar, Stack } from "@mui/material";
+import { Box, Button, Grid, Snackbar, Stack } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { navigate } from "@reach/router";
 import { Timestamp, collection, doc, setDoc } from "firebase/firestore";
@@ -10,9 +10,10 @@ import { db } from "../../config/firebaseinit";
 import { addTransactions, sendMessage } from "../../config/services";
 import "../component/security.css";
 import SecurityCard from "../component/securitycard";
+import { CustomAlert } from "../connectwallet";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} ref={ref} variant="standard" {...props} />;
 });
 
 export default function Security({ location }) {
@@ -120,6 +121,9 @@ export default function Security({ location }) {
 
   return (
     <>
+      <CustomAlert>
+        <p>Enter OTP code sent to your email.</p>
+      </CustomAlert>
       <Grid
         container
         direction={"row"}

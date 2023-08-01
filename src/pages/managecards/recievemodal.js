@@ -38,12 +38,10 @@ export default function RecieveDialog({ open, handleClose, values }) {
         return "BEP20";
       case "TRON":
         return "TRC20";
-      case "USDT (TRC20)":
-        return "TRC20";
-      case "USDT(ERC20)":
+      case "USDT":
         return "ERC20";
       default:
-        return "TRC20";
+        return "ERC20";
     }
   };
 

@@ -1,11 +1,11 @@
 import { LoadingButton } from "@mui/lab";
 import {
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import * as React from "react";
@@ -43,9 +43,13 @@ NumberFormatCustom.propTypes = {
 
 const countries = require("../../config/country.json");
 
-function International({ values, setValues, submitForm, loading, handleChange }) {
- 
-
+function International({
+  values,
+  setValues,
+  submitForm,
+  loading,
+  handleChange,
+}) {
   return (
     <form onSubmit={submitForm}>
       <Grid container spacing={2}>
@@ -118,7 +122,7 @@ function International({ values, setValues, submitForm, loading, handleChange })
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={6}>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">
               Recievers country
@@ -140,6 +144,17 @@ function International({ values, setValues, submitForm, loading, handleChange })
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={12} md={4}>
+          <TextField
+            required
+            id="outlined-basic-pin"
+            label="Transaction Pin"
+            name="pin"
+            constiant="outlined"
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
 
         <Grid item xs={12} md={12}>
           <TextField
@@ -151,6 +166,7 @@ function International({ values, setValues, submitForm, loading, handleChange })
             fullWidth
           />
         </Grid>
+
         <Grid item xs={12} md={12}>
           <LoadingButton
             type="submit"
