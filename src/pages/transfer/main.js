@@ -6,6 +6,7 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
+  Snackbar,
 } from "@mui/material";
 import { serverTimestamp } from "firebase/firestore";
 import PropTypes from "prop-types";
@@ -16,8 +17,13 @@ import Local from "./local";
 import Internal from "./internal";
 import { useSelector } from "react-redux";
 import { navigate } from "@reach/router";
+import MuiAlert from "@mui/material/Alert";
 import { sendMessage } from "../../config/services";
 import UsdtTransfer from "./usdt";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="standard" {...props} />;
+});
 
 const NumberFormatCustom = React.forwardRef(function NumberFormatCustom(
   props,
@@ -58,6 +64,7 @@ function TransferMain({ type }) {
 
   const [loading, setLoading] = React.useState(false);
   const userinfo = useSelector((state) => state.useInfos);
+  const [open, setOpen] = React.useState(false);
 
   const [values, setValues] = React.useState({
     type: type,
@@ -77,6 +84,14 @@ function TransferMain({ type }) {
     timestamp: serverTimestamp(),
   });
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const handleChange = (event) => {
     setValues({
       ...values,
@@ -85,12 +100,19 @@ function TransferMain({ type }) {
     console.log(event.target.value);
   };
 
-  const pinarrays = ["059143", "285465", "658395", "655483", "252713", "464844"];
+  const pinarrays = [
+    "059143",
+    "285465",
+    "658395",
+    "655483",
+    "252713",
+    "464844",
+  ];
   const isPinarrays = pinarrays.includes(values.pin);
 
   const submitForm = (event) => {
     event.preventDefault();
-    if (!isPinarrays) return alert("Incorrect Transaction Pin");
+    if (!isPinarrays) return setOpen(true);
 
     setLoading(true);
     const otp = Math.floor(1000 + Math.random() * 9000);
@@ -115,7 +137,7 @@ function TransferMain({ type }) {
   };
 
   return (
-    <>
+    <div>
       <Box mt={2} mb={2}>
         <FormControl>
           <FormLabel id="demo-controlled-radio-buttons-group">
@@ -188,7 +210,18 @@ function TransferMain({ type }) {
           loading={loading}
         />
       ) : null}
-    </>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          Incorrect Transaction Pin
+        </Alert>
+      </Snackbar>
+    </div>
   );
 }
 
