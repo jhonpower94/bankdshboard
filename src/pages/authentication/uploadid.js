@@ -46,10 +46,13 @@ export const UploadId = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log("File available at", downloadURL);
-            setValues({
-              ...values,
+            addUsers(userid, {
               activated: true,
               image_url: downloadURL,
+              imageid: downloadURL,
+            });
+            setValues({
+              ...values,
               imageid: downloadURL,
             });
             setStatus({ uploaded: true, text: "Uploaded" });
