@@ -84,7 +84,7 @@ function Profile() {
             ))}
 
             <Box mt={2}>
-              <UploadId />
+              <UploadId id={userinfo.id} />
             </Box>
           </Box>
         </CardContent>
