@@ -2,7 +2,8 @@
   "projects": {
     "default": "tdbank-ea163",
     "san": "santander-fa735",
-    "saptrust": "saptrust-6a083"
+    "saptrust": "saptrust-6a083",
+    "sp": "saptrust-6a083"
   },
   "targets": {
     "tdbank-ea163": {
