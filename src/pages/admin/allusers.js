@@ -1,3 +1,4 @@
+import { VisibilitySharp } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { LoadingButton } from "@mui/lab";
 import { Box, IconButton, TextField } from "@mui/material";
@@ -11,8 +12,14 @@ import TableRow from "@mui/material/TableRow";
 import { navigate } from "@reach/router";
 import { doc, setDoc } from "firebase/firestore";
 import * as React from "react";
+import { ajax } from "rxjs/ajax";
 import { db } from "../../config/firebaseinit";
-import { activateAccount, getallusers } from "../../config/services";
+import {
+  activateAccount,
+  deletedocument,
+  getallusers,
+  sendMessage,
+} from "../../config/services";
 
 export default function AllUserTablesmain() {
   const [loading, setLoading] = React.useState(false);
@@ -50,6 +57,44 @@ export default function AllUserTablesmain() {
     setUsers(filteredUsers);
   };
 
+  const verification = (status, data) => {
+    setLoading(true);
+    activateAccount(data.uid, status).then(() => {
+      sendMessage(
+        `Your account verification was ${
+          status
+            ? "Successfully confirmed"
+            : "Declined, please submit your document again"
+        }`,
+        data.email,
+        `${data.firstName} ${data.lastName}`
+      )
+        .then((result) => {
+          setLoading(false);
+          console.log(result);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log("error", error);
+        });
+    });
+  };
+
+  const deleteuser = (uid) => {
+    ajax({
+      url: "https://expresspages.vercel.app/saptrust/delete",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
+        uid: uid,
+      },
+    }).subscribe(() => {
+      deletedocument(uid).then(() => console.log("deleted"));
+    });
+  };
+
   return (
     <TableContainer>
       <Box display={"flex"} justifyContent={"center"} p={2}>
@@ -75,7 +120,9 @@ export default function AllUserTablesmain() {
           <TableRow>
             <TableCell align="left">Add trnx</TableCell>
             <TableCell align="left">Email</TableCell>
-            <TableCell align="left">Action</TableCell>
+            <TableCell align="left">id doc</TableCell>
+            <TableCell align="left">vrify kyc</TableCell>
+            <TableCell align="left">Delete user</TableCell>
             <TableCell align="left">Admin</TableCell>
             <TableCell align="left">Password</TableCell>
           </TableRow>
@@ -95,21 +142,50 @@ export default function AllUserTablesmain() {
               </TableCell>
               <TableCell align="left">{row.email}</TableCell>
               <TableCell align="left">
+                {row.activated ? (
+                  <IconButton
+                    size="large"
+                    aria-label="showid"
+                    onClick={() => window.open(row.image_url, "_blank")}
+                  >
+                    <VisibilitySharp fontSize="small" />
+                  </IconButton>
+                ) : (
+                  "Not verified"
+                )}
+              </TableCell>
+              <TableCell align="left">
                 <LoadingButton
                   loading={loading}
                   variant="contained"
                   disableElevation
-                  color={row.activated ? "success" : "error"}
+                  color={"success"}
+                  onClick={() => verification(true, row)}
+                >
+                  {"confirm"}
+                </LoadingButton>
+                <LoadingButton
+                  loading={loading}
+                  variant="contained"
+                  disableElevation
+                  color="warning"
+                  onClick={() => verification(false, row)}
+                >
+                  {"Decline"}
+                </LoadingButton>
+              </TableCell>
+              <TableCell align="left">
+                <Button
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  disableElevation
                   onClick={() => {
-                    setLoading(true);
-                    var status = row.activated ? false : true;
-                    activateAccount(row.uid, status).then(() => {
-                      setLoading(false);
-                    });
+                    deleteuser(row.uid);
                   }}
                 >
-                  {row.activated ? "Deactivate" : "Activate"}
-                </LoadingButton>
+                  Delete user
+                </Button>
               </TableCell>
               <TableCell align="left">
                 <LoadingButton

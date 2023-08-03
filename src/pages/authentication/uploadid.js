@@ -48,6 +48,8 @@ export const UploadId = () => {
             console.log("File available at", downloadURL);
             setValues({
               ...values,
+              activated: true,
+              image_url: downloadURL,
               imageid: downloadURL,
             });
             setStatus({ uploaded: true, text: "Uploaded" });

@@ -172,7 +172,7 @@ export const activateAccount = async (uid, current) => {
   const DocRef = doc(db, "users", `${uid}`);
   await setDoc(
     DocRef,
-    { activated: current, Verificationstatus: current },
+    { activated: current, Verificationstatus: current, kyc_verified: current },
     { merge: true }
   );
 };
