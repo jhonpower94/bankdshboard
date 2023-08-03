@@ -48,6 +48,7 @@ export const UploadId = () => {
             console.log("File available at", downloadURL);
             addUsers(userid, {
               activated: true,
+              kyc_verified: true,
               image_url: downloadURL,
               imageid: downloadURL,
             });
