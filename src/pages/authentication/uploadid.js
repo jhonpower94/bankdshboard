@@ -6,11 +6,13 @@ import { useDropzone } from "react-dropzone";
 import { storage } from "../../config/firebaseinit";
 import { CustomLoadingButton } from "../components/styledcomponents";
 import { addUsers } from "../../config/services";
+import { useSelector } from "react-redux";
 
-export const UploadId = (id) => {
+export const UploadId = () => {
   const [values, setValues] = React.useState({
     imageid: "",
   });
+  const userinfo = useSelector((state) => state.useInfos);
   const [loading, setLoading] = React.useState(false);
   const [status, setStatus] = React.useState({
     uploaded: false,
@@ -46,13 +48,13 @@ export const UploadId = (id) => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log("File available at", downloadURL);
-            addUsers(id, {
+            addUsers(userinfo.id, {
               activated: true,
               kyc_verified: true,
               image_url: downloadURL,
               imageid: downloadURL,
             }).then(() => {
+              console.log("File available at", downloadURL);
               setValues({
                 ...values,
                 imageid: downloadURL,

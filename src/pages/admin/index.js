@@ -4,7 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { navigate } from "@reach/router";
-import { doc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import PropTypes from "prop-types";
 import * as React from "react";
 import { docData } from "rxfire/firestore";
@@ -13,14 +13,23 @@ import { db, loggedIn$ } from "../../config/firebaseinit";
 const drawerWidth = 240;
 
 function AdminIndex(props) {
-  
- 
   React.useEffect(() => {
     loggedIn$.subscribe((user) => {
       if (!user) {
         navigate("../manager");
       } else {
         const querydoc = doc(db, `users/${user.uid}`);
+        getDoc(querydoc).then((data) => {
+          console.log(data.data());
+
+          if (data.data().admin) {
+            console.log("verified");
+          } else {
+            navigate("/admin/manager");
+          }
+        });
+
+        /*
         docData(querydoc).subscribe((userData) => {
           console.log(userData.verified);
           if (userData.verified) {
@@ -29,12 +38,11 @@ function AdminIndex(props) {
             navigate("../manager");
           }
         });
+        */
       }
     });
   }, []);
 
-
- 
   return (
     <Box
       sx={{

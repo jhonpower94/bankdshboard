@@ -19,6 +19,7 @@ import { formatLocaleCurrency } from "country-currency-map";
 import { db } from "../../config/firebaseinit";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import CustomizedSnackbars from "../components/snackbar";
+import { ConfirmTransaction } from "./compoinents";
 
 export default function AllTransactions() {
   const [loading, setLoading] = React.useState(false);
@@ -39,57 +40,7 @@ export default function AllTransactions() {
     setOpenSnackbar(false);
   };
 
-  const confirm = (data) => {
-    setLoading(true);
-    const userRef = doc(db, "users", data.userid, "account", data.type);
-    getDoc(userRef).then((user) => {
-      console.log(user.data());
-      const oldbalance = user.data().balance;
-      const newbalance = oldbalance - parseInt(data.amount);
-
-      updateUserBalance(data.userid, data.type, newbalance).then(() => {
-        const usertrxRef = doc(
-          db,
-          "users",
-          data.userid,
-          "transactions",
-          data.transactionid
-        );
-        setDoc(usertrxRef, { pending: false }, { merge: true }).then(() => {
-          const trxRef = doc(db, "transactions", data.uid);
-          setDoc(trxRef, { pending: false }, { merge: true }).then(() => {
-            addNotification(
-              data.userid,
-              "Debit",
-              `your transaction of ${
-                data.amount
-              } has been successfully confirmed.`
-            ).then(() => {
-              sendMessage(
-                `You have successfully made a transfer of <strong>$${
-                  data.amount
-                }</strong>, and your ${
-                  data.type
-                } account remaining balance is <strong>$${newbalance}</strong>.`,
-                "Transaction confirmation",
-                data.email,
-                `${data.fullname}`
-              )
-                .then((result) => {
-                  console.log(result);
-                  setLoading(false);
-                  setOpenSnackbar(true);
-                })
-                .catch((error) => {
-                  console.log("error", error);
-                  setLoading(false);
-                });
-            });
-          });
-        });
-      });
-    });
-  };
+  
 
   return (
     <>
@@ -126,17 +77,10 @@ export default function AllTransactions() {
                 </TableCell>
 
                 <TableCell align="left">
-                  <LoadingButton
-                    disabled={row.pending ? false : true}
-                    loading={loading}
-                    variant="contained"
-                    disableElevation
-                    onClick={() => {
-                      confirm(row);
-                    }}
-                  >
-                    confirm
-                  </LoadingButton>
+                  <ConfirmTransaction
+                    row={row}
+                    setOpenSnackbar={setOpenSnackbar}
+                  />
                 </TableCell>
               </TableRow>
             ))}

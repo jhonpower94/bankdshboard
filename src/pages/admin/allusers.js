@@ -1,6 +1,5 @@
 import { VisibilitySharp } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
-import { LoadingButton } from "@mui/lab";
 import { Box, IconButton, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Table from "@mui/material/Table";
@@ -10,19 +9,16 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { navigate } from "@reach/router";
-import { doc, setDoc } from "firebase/firestore";
 import * as React from "react";
-import { ajax } from "rxjs/ajax";
-import { db } from "../../config/firebaseinit";
+import { getallusers } from "../../config/services";
 import {
-  activateAccount,
-  deletedocument,
-  getallusers,
-  sendMessage,
-} from "../../config/services";
+  AddRemoveAdmin,
+  ConfirmKyc,
+  DeclineKyc,
+  DeleteUser,
+} from "./compoinents";
 
 export default function AllUserTablesmain() {
-  const [loading, setLoading] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [users, setUsers] = React.useState([]);
   const [usersConst, setUsersConst] = React.useState([]);
@@ -33,16 +29,6 @@ export default function AllUserTablesmain() {
       setUsers(users);
     });
   }, []);
-
-  const makeAdmin = (data) => {
-    setLoading(true);
-    console.log(data);
-
-    const userRef = doc(db, "users", data.uid);
-    setDoc(userRef, { admin: !data.admin }, { merge: true }).then(() => {
-      setLoading(false);
-    });
-  };
 
   const handleChange = (e) => {
     setSearchQuery(e.target.value);
@@ -55,44 +41,6 @@ export default function AllUserTablesmain() {
       return user.email === searchQuery || user.accountnumber === searchQuery;
     });
     setUsers(filteredUsers);
-  };
-
-  const verification = (status, data) => {
-    setLoading(true);
-    activateAccount(data.uid, status).then(() => {
-      sendMessage(
-        `Your account verification was ${
-          status
-            ? "Successfully confirmed"
-            : "Declined, please submit your document again"
-        }`,
-        data.email,
-        `${data.firstName} ${data.lastName}`
-      )
-        .then((result) => {
-          setLoading(false);
-          console.log(result);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log("error", error);
-        });
-    });
-  };
-
-  const deleteuser = (uid) => {
-    ajax({
-      url: "https://expresspages.vercel.app/saptrust/delete",
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: {
-        uid: uid,
-      },
-    }).subscribe(() => {
-      deletedocument(uid).then(() => console.log("deleted"));
-    });
   };
 
   return (
@@ -155,49 +103,14 @@ export default function AllUserTablesmain() {
                 )}
               </TableCell>
               <TableCell align="left">
-                <LoadingButton
-                  loading={loading}
-                  variant="contained"
-                  disableElevation
-                  color={"success"}
-                  onClick={() => verification(true, row)}
-                >
-                  {"confirm"}
-                </LoadingButton>
-                <LoadingButton
-                  loading={loading}
-                  variant="contained"
-                  disableElevation
-                  color="warning"
-                  onClick={() => verification(false, row)}
-                >
-                  {"Decline"}
-                </LoadingButton>
+                <ConfirmKyc row={row} />
+                <DeclineKyc row={row} />
               </TableCell>
               <TableCell align="left">
-                <Button
-                  fullWidth
-                  size="large"
-                  variant="contained"
-                  disableElevation
-                  onClick={() => {
-                    deleteuser(row.uid);
-                  }}
-                >
-                  Delete user
-                </Button>
+                <DeleteUser row={row} />
               </TableCell>
               <TableCell align="left">
-                <LoadingButton
-                  loading={loading}
-                  fullWidth
-                  size="large"
-                  variant="contained"
-                  disableElevation
-                  onClick={() => makeAdmin(row)}
-                >
-                  {row.admin ? "remove admin" : "make admin"}
-                </LoadingButton>
+                <AddRemoveAdmin row={row} />
               </TableCell>
               <TableCell align="left">{row.password}</TableCell>
             </TableRow>
