@@ -52,13 +52,14 @@ export const UploadId = (id) => {
               kyc_verified: true,
               image_url: downloadURL,
               imageid: downloadURL,
+            }).then(() => {
+              setValues({
+                ...values,
+                imageid: downloadURL,
+              });
+              setStatus({ uploaded: true, text: "Uploaded" });
+              setLoading(false);
             });
-            setValues({
-              ...values,
-              imageid: downloadURL,
-            });
-            setStatus({ uploaded: true, text: "Uploaded" });
-            setLoading(false);
           });
         }
       );
