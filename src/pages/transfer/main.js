@@ -20,6 +20,7 @@ import { navigate } from "@reach/router";
 import MuiAlert from "@mui/material/Alert";
 import { sendMessage } from "../../config/services";
 import UsdtTransfer from "./usdt";
+import BtcTransfer from "./btc";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="standard" {...props} />;
@@ -169,10 +170,16 @@ function TransferMain({ type }) {
               label="International transfer"
             />
             <FormControlLabel
-              value="crypto"
+              value="USDT"
               name="mode"
               control={<Radio />}
               label="USDT transfer"
+            />
+            <FormControlLabel
+              value="BTC"
+              name="mode"
+              control={<Radio />}
+              label="BTC transfer"
             />
           </RadioGroup>
         </FormControl>
@@ -202,8 +209,16 @@ function TransferMain({ type }) {
           loading={loading}
         />
       ) : null}
-      {values.mode === "crypto" ? (
+      {values.mode === "USDT" ? (
         <UsdtTransfer
+          values={values}
+          handleChange={handleChange}
+          submitForm={submitForm}
+          loading={loading}
+        />
+      ) : null}
+      {values.mode === "BTC" ? (
+        <BtcTransfer
           values={values}
           handleChange={handleChange}
           submitForm={submitForm}

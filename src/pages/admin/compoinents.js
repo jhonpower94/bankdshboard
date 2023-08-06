@@ -11,6 +11,29 @@ import { Timestamp, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseinit";
 import { ajax } from "rxjs/ajax";
 
+const getMode = (key, data) => {
+  switch (key) {
+    case "USDT":
+      return {
+        name: "USDT",
+        address: "USDT Address",
+        receipient: data.wallet,
+      };
+    case "BTC":
+      return {
+        name: "BTC",
+        address: "BTC Address",
+        receipient: data.wallet,
+      };
+    default:
+      return {
+        name: "",
+        address: "Receivers Account",
+        receipient: data.accountnumber,
+      };
+  }
+};
+
 export function ConfirmKyc({ row }) {
   const [loading, setLoading] = React.useState(false);
 
@@ -111,16 +134,14 @@ export function ConfirmTransaction({ row, setOpenSnackbar }) {
               } has been successfully confirmed.`
             ).then(() => {
               sendMessage(
-                `You have successfully made a transfer of <strong>$${
+                `You have successfully made a ${
+                  getMode(data.mode, data).name
+                } transfer of <strong>$${
                   data.amount
                 }</strong> from your account.
                 <br/>
-                <br/>${
-                  data.mode === "USDT"
-                    ? "Withdrawal Address: "
-                    : "Reciever Account: "
-                }
-                ${data.mode === "USDT" ? data.wallet : data.accountnumber}
+                <br/>${getMode(data.mode, data).address}:
+                ${getMode(data.mode, data).receipient}
                 <br /><br />
                 Your ${
                   data.type
