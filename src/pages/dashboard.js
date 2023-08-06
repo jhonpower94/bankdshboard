@@ -2,7 +2,7 @@ import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
 import HistoryIcon from "@mui/icons-material/History";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
-import { Divider } from "@mui/material";
+import { Divider, ListItem } from "@mui/material";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
@@ -16,12 +16,19 @@ import PropTypes from "prop-types";
 import React from "react";
 import { loggedIn$ } from "../config/firebaseinit";
 import {
+  getLoans,
+  getNotification,
   getTransactions,
   getTransactionsType,
   getUserInfo,
 } from "../config/services";
 import AppbarMain, { Drawertop } from "./appbar/appbar";
-import { AccountBalance, CreditScore, Person } from "@mui/icons-material";
+import {
+  AccountBalance,
+  CreditScore,
+  EmailRounded,
+  Person,
+} from "@mui/icons-material";
 
 const drawerWidth = 300;
 
@@ -36,10 +43,12 @@ function ResponsiveDrawer(props) {
         navigate("account");
       } else {
         // console.log(user);
+        getLoans(user.uid);
         getUserInfo(user.uid);
         getTransactions(user.uid);
         getTransactionsType(user.uid, "savings");
-        getTransactionsType(user.uid, "checkings");
+        getTransactionsType(user.uid, "overdraft");
+        getNotification(user.uid);
       }
     });
   }, []);
@@ -108,6 +117,20 @@ function ResponsiveDrawer(props) {
             />
           </ListItemButton>
         ))}
+        <a
+          href="mailto:saptrustservice@gmail.com"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <ListItemButton>
+            <ListItemIcon>
+              <EmailRounded />
+            </ListItemIcon>
+            <ListItemText
+              primary={"Support"}
+              primaryTypographyProps={{ variant: "body2" }}
+            />
+          </ListItemButton>
+        </a>
       </List>
     </div>
   );

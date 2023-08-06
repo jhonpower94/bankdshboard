@@ -1,4 +1,4 @@
-import { Chip, TablePagination, Typography } from "@mui/material";
+import { Chip, Tab, TablePagination, Tabs, Typography } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,10 +6,31 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import * as React from "react";
+import { useSelector } from "react-redux";
+import SwipeableViews from "react-swipeable-views";
 import { CurrencyFormat } from "../currencyformatter";
 import { TransDetailDailog } from "./detailmodal";
 
-export default function TransactioLight({ data, type }) {
+const styles = {
+  tabs: {
+    background: "#fff",
+  },
+  slide: {
+    padding: 15,
+    minHeight: 100,
+  },
+  slide1: {
+    backgroundColor: "#FEA900",
+  },
+  slide2: {
+    backgroundColor: "#B3DC4A",
+  },
+  slide3: {
+    backgroundColor: "#6AC0FF",
+  },
+};
+
+function TransactionTable({ data }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
@@ -28,7 +49,7 @@ export default function TransactioLight({ data, type }) {
 
   React.useEffect(() => {
     setRows(data);
-  }, [data]);
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -48,7 +69,7 @@ export default function TransactioLight({ data, type }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
+            {rows.map((row, index) => (
               <TableRow
                 key={index}
                 hover
@@ -98,6 +119,62 @@ export default function TransactioLight({ data, type }) {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <TransDetailDailog open={open} handleClose={handleClose} data={datax} />
+    </div>
+  );
+}
+
+export default function TransactioLight() {
+  const transactions = useSelector((state) => state.totalTransactionsType);
+  const [state, setState] = React.useState({ index: 0 });
+
+  const handleChange = (event, value) => {
+    console.log(value);
+    setState({
+      index: value,
+    });
+  };
+
+  const handleChangeIndex = (index) => {
+    setState({
+      index: index,
+    });
+  };
+
+  const { index } = state;
+
+  const accountarrays = [
+    {
+      accountype: "savings",
+      data: [...transactions.savings],
+    },
+    {
+      accountype: "overdraft",
+      data: [...transactions.checkings],
+    },
+  ];
+
+  return (
+    <div>
+      <Tabs
+        variant="fullWidth"
+        value={state.index}
+        onChange={handleChange}
+        style={styles.tabs}
+      >
+        {accountarrays.map((account, index) => (
+          <Tab label={account.accountype} key={index} />
+        ))}
+      </Tabs>
+      <SwipeableViews
+        index={index}
+        onChangeIndex={(index) => handleChangeIndex(index)}
+      >
+        {accountarrays.map((account, index) => (
+          <div style={Object.assign({}, styles.slide)} key={index}>
+            <TransactionTable data={account.data} />
+          </div>
+        ))}
+      </SwipeableViews>
     </div>
   );
 }

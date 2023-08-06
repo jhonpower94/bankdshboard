@@ -1,7 +1,11 @@
 import React from "react";
 
 import { Card, CardActionArea, CardHeader, Grid } from "@mui/material";
-import { getallTransactions, getallusers } from "../../config/services";
+import {
+  getAllUserLoans,
+  getallTransactions,
+  getallusers,
+} from "../../config/services";
 import { formatLocaleCurrency } from "country-currency-map";
 import { navigate } from "@reach/router";
 
@@ -13,6 +17,12 @@ function AdminInfo() {
     pendingTransfer: 0,
     totalCredited: 0,
     totalDebited: 0,
+    totalLoans: 0,
+  });
+
+  const [loaninfo, setLoanInfo] = React.useState({
+    totalLoans: 0,
+    pendingloans: 0,
   });
 
   React.useEffect(() => {
@@ -55,6 +65,19 @@ function AdminInfo() {
         totalDebited: totalDebit,
       });
     });
+
+    getAllUserLoans().subscribe((loans) => {
+      //pending loans
+      const pending = loans.filter((el) => {
+        return el.pending === true;
+      });
+
+      setLoanInfo({
+        ...loaninfo,
+        totalLoans: loans.length,
+        pendingloans: pending.length,
+      });
+    });
   }, []);
 
   return (
@@ -65,7 +88,7 @@ function AdminInfo() {
             title: "Total user",
             value: allusers,
             bg: "rgb(63 81 181 / 20%)",
-            route: "manager/users"
+            route: "manager/users",
           },
           {
             title: "All transfer",
@@ -78,6 +101,18 @@ function AdminInfo() {
             value: info.pendingTransfer,
             bg: "rgb(255 152 0 / 20%)",
             route: "manager/transactions",
+          },
+          {
+            title: "All Loans",
+            value: loaninfo.totalLoans,
+            bg: "rgb(156 39 176 / 20%)",
+            route: "manager/loans",
+          },
+          {
+            title: "Pending Loans",
+            value: loaninfo.pendingloans,
+            bg: "rgb(233 30 99 / 20%)",
+            route: "manager/loans",
           },
           {
             title: "total credited amount",

@@ -134,7 +134,7 @@ const investment = (state = { trades: [], length: 0 }, action) => {
   }
 };
 const notifications = (state = [], action) => {
-  const newNoty = [...state, action.payload];
+  const newNoty = action.payload;
   switch (action.type) {
     case "NOTIFICATION":
       return newNoty;
@@ -243,6 +243,16 @@ const currentLocation = (state = "account", action) => {
   }
 };
 
+const loans = (state = [], action) => {
+  const newloan = action.payload;
+  switch (action.type) {
+    case "LOAN":
+      return newloan;
+    default:
+      return state;
+  }
+};
+
 export const allreducer = combineReducers({
   //  language: languageSelected,
   // darkMode: darkMode,
@@ -265,5 +275,6 @@ export const allreducer = combineReducers({
   totalTransactions: totalTransactions,
   totalTransactionsType: totalTransactionsType,
   currentLocation: currentLocation,
+  loans: loans,
   // pathname: pathname,
 });

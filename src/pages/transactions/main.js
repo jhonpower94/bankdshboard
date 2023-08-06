@@ -29,7 +29,7 @@ export default function TransactioMain({ data, type }) {
   return (
     <div>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 1000 }} aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>Type</TableCell>
@@ -60,7 +60,7 @@ export default function TransactioMain({ data, type }) {
                     color={row.pending ? "orange" : "green"}
                   >
                     {row.pending ? "Pending" : "Successful"}
-                  </Typography>F
+                  </Typography>
                 </TableCell>
                 <TableCell>{row.date}</TableCell>
                 <TableCell sx={{ textTransform: "uppercase" }}>

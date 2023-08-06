@@ -45,7 +45,7 @@ const UsersIndex = ({ id }) => {
 
   const { index } = state;
 
-  const accountarrays = ["savings", "checkings"];
+  const accountarrays = ["savings", "overdraft"];
 
   return (
     <div>

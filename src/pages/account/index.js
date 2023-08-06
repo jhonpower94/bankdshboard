@@ -78,10 +78,7 @@ function AccountIndex() {
                   See all
                 </Button>
               </Toolbar>
-              <TransactioLight
-                data={[...transactions.savings]}
-                type={"savings"}
-              />
+              <TransactioLight />
             </Grid>
           </Grid>
         </Grid>
@@ -174,10 +171,7 @@ function AccountIndex() {
                   See all
                 </Button>
               </Toolbar>
-              <TransactioLight
-                data={[...transactions.savings]}
-                type={"savings"}
-              />
+              <TransactioLight  />
             </Grid>
           </Grid>
         </Grid>

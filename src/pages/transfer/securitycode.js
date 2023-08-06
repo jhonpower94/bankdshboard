@@ -39,7 +39,7 @@ export default function Security({ location }) {
     switch (data) {
       case "savings":
         return savingsinfo.balance;
-      case "checkings":
+      case "overdraft":
         return checkingsinfo.balance;
       default:
         return savingsinfo.balance;

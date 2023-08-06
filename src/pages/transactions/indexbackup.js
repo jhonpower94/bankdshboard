@@ -49,7 +49,7 @@ const TransferIndex = ({ account }) => {
       data: [...transactions.savings],
     },
     {
-      accountype: "checkings",
+      accountype: "overdraft",
       data: [...transactions.checkings],
     },
   ];

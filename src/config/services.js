@@ -13,6 +13,8 @@ import { tap } from "rxjs/operators";
 import { store } from "../";
 import {
   checkingsinfo$,
+  loan$,
+  notification$,
   savingsinfo$,
   totaltransaction$,
   totaltransactioncheckings$,
@@ -26,7 +28,7 @@ const current_timestamp = Timestamp.fromDate(new Date());
 
 const accountArray = [
   { type: "savings", store: savingsinfo$ },
-  { type: "checkings", store: checkingsinfo$ },
+  { type: "overdraft", store: checkingsinfo$ },
 ];
 
 export const addUsers = async (docid, userdatas) => {
@@ -110,7 +112,7 @@ export const getTransactionsType = (userid, type) => {
       console.log(trans.length);
       if (type === "savings") {
         store.dispatch(totaltransactionsavings$(trans));
-      } else if (type === "checkings") {
+      } else if (type === "overdraft") {
         store.dispatch(totaltransactioncheckings$(trans));
       }
     });
@@ -187,10 +189,29 @@ export const addNotification = async (id, title, message) => {
 };
 
 export const getNotification = (id) => {
-  const notificationRef = query(
-    collection(db, "users", `${id}`, "notification")
+  const notificationRef = query(collection(db, "users", id, "notification"));
+  return collectionData(notificationRef, { idField: "uid" }).subscribe(
+    (data) => {
+      store.dispatch(notification$(data));
+    }
   );
-  return collectionData(notificationRef, { idField: "uid" });
+};
+
+export const getLoans = (id) => {
+  const loanRef = query(
+    collection(db, "loan"),
+    where("userid", "==", id),
+    orderBy("date", "desc")
+  );
+  return collectionData(loanRef, { idField: "uid" }).subscribe((loans) => {
+    console.log(loans);
+    store.dispatch(loan$(loans));
+  });
+};
+
+export const getAllUserLoans = () => {
+  const loanRef = query(collection(db, "loan"), orderBy("date", "desc"));
+  return collectionData(loanRef, { idField: "uid" });
 };
 
 export const sendMessage = (message, subject, email, name) => {

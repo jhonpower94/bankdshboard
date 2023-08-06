@@ -74,7 +74,7 @@ export default function Menus() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const userinfo = useSelector((state) => state.useInfos);
-  const [allNotifications, setNotification] = React.useState([]);
+  const allNotifications = useSelector((state) => state.notification);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -84,13 +84,6 @@ export default function Menus() {
 
   const [anchorEluser, setAnchorEluser] = React.useState(null);
   const openUser = Boolean(anchorEluser);
-
-  React.useEffect(() => {
-    getNotification(userinfo.id).subscribe((data) => {
-      setNotification(data);
-      console.log(data);
-    });
-  }, []);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

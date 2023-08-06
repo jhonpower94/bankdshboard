@@ -7,19 +7,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { formatLocaleCurrency } from "country-currency-map";
 import * as React from "react";
-import {
-  getallTransactions
-} from "../../config/services";
+import { getAllUserLoans } from "../../config/services";
 import CustomizedSnackbars from "../components/snackbar";
-import { ConfirmTransaction } from "./compoinents";
+import { ConfirmLoan } from "./compoinents";
 
-export default function AllTransactions() {
+export default function LoansTransactions() {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [transactions, setTransactions] = React.useState([]);
   React.useEffect(() => {
-    getallTransactions().subscribe((transactions) => {
-      console.log(transactions);
-      setTransactions(transactions);
+    getAllUserLoans().subscribe((loans) => {
+      console.log(loans);
+      setTransactions(loans);
     });
   }, []);
 
@@ -58,7 +56,7 @@ export default function AllTransactions() {
                   </Typography>
                 </TableCell>
                 <TableCell align="left">
-                  <Typography> {row.fullname}</Typography>
+                  <Typography> {row.name}</Typography>
                   <Typography>{row.accountnumber}</Typography>
                 </TableCell>
                 <TableCell align="left">
@@ -66,10 +64,7 @@ export default function AllTransactions() {
                 </TableCell>
 
                 <TableCell align="left">
-                  <ConfirmTransaction
-                    row={row}
-                    setOpenSnackbar={setOpenSnackbar}
-                  />
+                  <ConfirmLoan row={row} setOpenSnackbar={setOpenSnackbar} />
                 </TableCell>
               </TableRow>
             ))}

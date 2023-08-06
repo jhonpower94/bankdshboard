@@ -54,7 +54,7 @@ const CardSlder = () => {
       >
         {[
           { type: "savings", data: savingsinfo },
-          { type: "checkings", data: checkingsinfo },
+          { type: "overdraft", data: checkingsinfo },
         ].map((card, index) => (
           <div style={Object.assign({}, styles.slide)} key={index}>
             <CreditCard type={card.type} data={card.data} />

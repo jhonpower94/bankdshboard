@@ -26,6 +26,7 @@ import OrderCard from "./pages/managecards/order";
 import LoginDirect from "./pages/authentication/directlogin";
 import AdminInfo from "./pages/admin/admininfo";
 import AllTransactions from "./pages/admin/transactions";
+import LoansTransactions from "./pages/admin/loanstable";
 
 const theme = createTheme({
   palette: {
@@ -91,6 +92,7 @@ function App() {
         <AdminIndex path="manager">
           <AdminInfo path="/" />
           <AllTransactions path="transactions" />
+          <LoansTransactions path="loans" />
           <AllUserTablesmain path="users" />
           <EditUser path="user/:id" />
           <CreateTransferIndex path="addtransaction/:id" />

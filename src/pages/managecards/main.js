@@ -20,7 +20,7 @@ export default function ManageCards() {
         {
           title: "Overdraft",
           balance: "$50,000",
-          type: "checkings",
+          type: "overdraft",
           data: checkingsinfo
         },
       ].map((accnt, index) => (

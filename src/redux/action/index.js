@@ -159,3 +159,10 @@ export const currentLocation$ = (data) => {
     payload: data,
   };
 };
+
+export const loan$ = (data) => {
+  return {
+    type: "LOAN",
+    payload: data,
+  };
+};

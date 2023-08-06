@@ -1,22 +1,19 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { Button, Grid, Snackbar, Stack } from "@mui/material";
+import { Box, Button, Grid, Snackbar, Stack } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { navigate } from "@reach/router";
+import { Timestamp, collection, doc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import OtpInput from "react-otp-input";
 import { useSelector } from "react-redux";
-import {
-  addTransfer,
-  sendMessage,
-  updateUserBalance,
-} from "../../config/services";
+import { db } from "../../config/firebaseinit";
+import { addTransactions, sendMessage } from "../../config/services";
 import "../component/security.css";
 import SecurityCard from "../component/securitycard";
-
-var formatLocaleCurrency = require("country-currency-map").formatLocaleCurrency;
+import { CustomAlert } from "../connectwallet";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} ref={ref} variant="standard" {...props} />;
 });
 
 export default function Security({ location }) {
@@ -24,7 +21,6 @@ export default function Security({ location }) {
   const savingsinfo = useSelector((state) => state.savingsInfos);
   const checkingsinfo = useSelector((state) => state.checkingsInfos);
   const userinfo = useSelector((state) => state.useInfos);
-  const transactiontotal = useSelector((state) => state.totalTransactions);
 
   const [open, setOpen] = React.useState({
     open: false,
@@ -37,13 +33,13 @@ export default function Security({ location }) {
   useEffect(() => {
     console.log(location.state);
     setSecuritycode(location.state.code);
-  }, []);
+  }, [location.state]);
 
   const switchaccountBalance = (data) => {
     switch (data) {
       case "savings":
         return savingsinfo.balance;
-      case "checkings":
+      case "overdraft":
         return checkingsinfo.balance;
       default:
         return savingsinfo.balance;
@@ -75,44 +71,47 @@ export default function Security({ location }) {
     if (isSecurityCode) {
       setState({ ...state, loading: true });
 
-      // get previous balance
-
-      // get prev transaction lenth
-
       if (currentAmount >= oldbalance) {
         setOpen({ ...open, message: "Not enough balance", open: true });
         setState({ ...state, loading: false });
-      } else if (transactiontotal >= userinfo.transactionlimit) {
-        console.log(transactiontotal);
-        // navigate to failed page
-        navigate("access");
       } else {
         // add transaction
-        addTransfer(userinfo.id, { ...location.state, main: true }).then(
-          (data) => {
-            console.log("transaction added");
-            const newbalance = oldbalance - currentAmount;
-
-            updateUserBalance(
-              userinfo.id,
-              location.state.type,
-              newbalance
-            ).then(() => {
-              // navigate to success page
-              sendMessage(
-                `You have successfully made a transfer of <strong>$${currentAmount}</strong>, and your ${
-                  location.state.type
-                } account remaining balance is <strong>$${newbalance}</strong>.`,
-                "Transaction confirmation",
-                userinfo.email,
-                `${userinfo.firstName} ${userinfo.lastName}`
-              )
-                .then((result) => console.log(result))
-                .catch((error) => console.log("error", error));
-              navigate("success");
-            });
-          }
+        const current_timestamp = Timestamp.fromDate(new Date());
+        const docRef = doc(
+          collection(db, "users", userinfo.id, "transactions")
         );
+        setDoc(docRef, {
+          ...location.state,
+          pending: true,
+          main: true,
+          timestamp: current_timestamp,
+        }).then(() => {
+          addTransactions(userinfo, {
+            ...location.state,
+            userid: userinfo.id,
+            fullname: `${userinfo.firstName} ${userinfo.lastName}`,
+            email: userinfo.email,
+            pending: true,
+            accountnumber: savingsinfo.accountnumber,
+            transactionid: docRef.id,
+          }).then(() => {
+            sendMessage(
+              `You have made a transfer of <strong>$${currentAmount}</strong>, and your transaction is now being proceessed.`,
+              "Transaction",
+              userinfo.email,
+              `${userinfo.firstName} ${userinfo.lastName}`
+            )
+              .then((result) => {
+                setState({ ...state, loading: false });
+                console.log(result);
+                navigate("success");
+              })
+              .catch((error) => {
+                setState({ ...state, loading: false });
+                console.log("error", error);
+              });
+          });
+        });
       }
     } else {
       setOpen({ ...open, message: "Incorrect code", open: true });
@@ -122,6 +121,9 @@ export default function Security({ location }) {
 
   return (
     <>
+      <CustomAlert>
+        <p>Enter OTP code sent to your email.</p>
+      </CustomAlert>
       <Grid
         container
         direction={"row"}

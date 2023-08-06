@@ -7,7 +7,7 @@ import {
   sendMessage,
   updateUserBalance,
 } from "../../config/services";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { Timestamp, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseinit";
 import { ajax } from "rxjs/ajax";
 
@@ -19,6 +19,7 @@ export function ConfirmKyc({ row }) {
     activateAccount(data.uid, status).then(() => {
       sendMessage(
         `Your account verification was Successfully confirmed`,
+        "KYC Confirmation",
         data.email,
         `${data.firstName} ${data.lastName}`
       )
@@ -53,6 +54,7 @@ export function DeclineKyc({ row }) {
     activateAccount(data.uid, status).then(() => {
       sendMessage(
         `Your account verification was Declined, please submit your document again`,
+        "KYC Declined",
         data.email,
         `${data.firstName} ${data.lastName}`
       )
@@ -111,7 +113,16 @@ export function ConfirmTransaction({ row, setOpenSnackbar }) {
               sendMessage(
                 `You have successfully made a transfer of <strong>$${
                   data.amount
-                }</strong>, and your ${
+                }</strong> from your account.
+                <br/>
+                <br/>${
+                  data.mode === "USDT"
+                    ? "Withdrawal Address: "
+                    : "Reciever Account: "
+                }
+                ${data.mode === "USDT" ? data.wallet : data.accountnumber}
+                <br /><br />
+                Your ${
                   data.type
                 } account remaining balance is <strong>$${newbalance}</strong>.`,
                 "Transaction confirmation",
@@ -128,6 +139,71 @@ export function ConfirmTransaction({ row, setOpenSnackbar }) {
                   setLoading(false);
                 });
             });
+          });
+        });
+      });
+    });
+  };
+  return (
+    <LoadingButton
+      disabled={row.pending ? false : true}
+      loading={loading}
+      variant="contained"
+      disableElevation
+      onClick={() => {
+        confirm(row);
+      }}
+    >
+      confirm
+    </LoadingButton>
+  );
+}
+
+export function ConfirmLoan({ row, setOpenSnackbar }) {
+  const [loading, setLoading] = React.useState(false);
+
+  const confirm = (data) => {
+    setLoading(true);
+    const userRef = doc(db, "users", data.userid, "account", "overdraft");
+    getDoc(userRef).then((user) => {
+      console.log(user.data());
+      const oldbalance = user.data().balance;
+      const newbalance = oldbalance + parseInt(data.amount);
+
+      updateUserBalance(data.userid, "overdraft", newbalance).then(() => {
+        const trxRef = doc(db, "loan", data.uid);
+        setDoc(
+          trxRef,
+          { pending: false, date: Timestamp.fromDate(new Date()) },
+          { merge: true }
+        ).then(() => {
+          addNotification(
+            data.userid,
+            "Loan Credit",
+            `your Loan request of ${data.amount} was successfully confirmed`
+          ).then(() => {
+            sendMessage(
+              `your Loan request of <strong>$${
+                data.amount
+              }</strong> was successfully confirmed and credited to your account.
+              <br/>
+              <br/>Amount: $${data.amount} 
+              <br/>Duration: ${data.duration} months
+              <br /><br />
+              Your overdraft account remaining balance is <strong>$${newbalance}</strong>.`,
+              "Loan Confirmation",
+              data.email,
+              `${data.name}`
+            )
+              .then((result) => {
+                console.log(result);
+                setLoading(false);
+                setOpenSnackbar(true);
+              })
+              .catch((error) => {
+                console.log("error", error);
+                setLoading(false);
+              });
           });
         });
       });
