@@ -25,11 +25,10 @@ function CreditCard({ type, data }) {
           />
           <p className="card_numer">
             <NumberFormat
-              value=""
               allowEmptyFormatting
-              // value={data.cardnumber}
+              value={data.cardactive ? data.cardnumber : `#### #### #### ####`}
               displayType={"text"}
-              format={`#### #### #### 3345`}
+              format={`#### #### #### ####`}
               mask={"*"}
             />
           </p>
@@ -42,11 +41,7 @@ function CreditCard({ type, data }) {
           <div className="card__space-25">
             <span className="card__label">Expires</span>
             <p className="card__info">
-              ** / **
-              {
-                //data.Expiredate
-                ""
-              }
+              {data.cardactive ? data.Expiredate : "** / **"}
             </p>
           </div>
         </div>
@@ -54,7 +49,7 @@ function CreditCard({ type, data }) {
           <div className="card__black-line" />
           <div className="card__back-content">
             <div className="card__secret">
-              <p className="card__secret--last">420</p>
+              <p className="card__secret--last">{data.cvv}</p>
             </div>
             <img
               className="card__back-square card__square"

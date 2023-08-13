@@ -1,17 +1,16 @@
 import {
-  CardActions,
   Grid,
-  MenuItem,
-  Select,
-  Stack,
-  Tab,
-  Tabs,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  ListSubheader,
+  Stack
 } from "@mui/material";
 import { navigate } from "@reach/router";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-import SwipeableViews from "react-swipeable-views";
 import CreditCard from "../creditcard";
 import { CustomButton } from "../styles";
 
@@ -96,6 +95,21 @@ const TransferIndex = ({ account }) => {
             ))}
           </Stack>
         </Grid>
+        <Grid item xs={12} md={12} key={index}>
+        <List>
+          <ListSubheader>All Card Detail</ListSubheader>
+          {[
+            { title: "Card Number", value: savingsinfo.cardnumber },
+            { title: "Expire Date", value: savingsinfo.Expiredate },
+            { title: "CVV", value: savingsinfo.cvv },
+          ].map((data, index) => (
+            <ListItem key={index}>
+              <ListItemText primary={data.title} />
+              <ListItemSecondaryAction>{data.value}</ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
       </Grid>
     </div>
   );

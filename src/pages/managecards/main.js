@@ -1,4 +1,13 @@
-import { CardActions, CardHeader, Grid } from "@mui/material";
+import {
+  CardActions,
+  CardHeader,
+  Grid,
+  List,
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+  ListSubheader,
+} from "@mui/material";
 import { navigate } from "@reach/router";
 import * as React from "react";
 import { useSelector } from "react-redux";
@@ -15,13 +24,13 @@ export default function ManageCards() {
           title: "Savings account",
           balance: "$50,000",
           type: "savings",
-          data: savingsinfo
+          data: savingsinfo,
         },
         {
           title: "Overdraft",
           balance: "$50,000",
           type: "overdraft",
-          data: checkingsinfo
+          data: checkingsinfo,
         },
       ].map((accnt, index) => (
         <Grid item xs={12} md={6} key={index}>
@@ -44,6 +53,21 @@ export default function ManageCards() {
           </CardActions>
         </Grid>
       ))}
+      <Grid item xs={12} md={12} key={index}>
+        <List>
+          <ListSubheader>All Card Detail</ListSubheader>
+          {[
+            { title: "Card Number", value: savingsinfo.cardnumber },
+            { title: "Expire Date", value: savingsinfo.expiredate },
+            { title: "CVV", value: savingsinfo.cvv },
+          ].map((data, index) => (
+            <ListItem key={index}>
+              <ListItemText primary={data.title} />
+              <ListItemSecondaryAction>{data.value}</ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
     </Grid>
   );
 }
