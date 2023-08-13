@@ -1,4 +1,4 @@
-import { EmailOutlined } from "@mui/icons-material";
+import { Lock } from "@mui/icons-material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -24,7 +24,6 @@ import { deleteDoc, doc } from "firebase/firestore";
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { auth, db, signOut } from "../../config/firebaseinit";
-import { getNotification } from "../../config/services";
 import { useStyles } from "../styles";
 
 const StyledMenu = styled((props) => (
@@ -173,14 +172,22 @@ export default function Menus() {
         onClose={handleClose}
       >
         {[
-          { ttle: "password", icon: <VisibilityOutlinedIcon /> },
-          { ttle: "email", icon: <EmailOutlined /> },
+          {
+            ttle: "password",
+            page: "settings/password",
+            icon: <Lock />,
+          },
+          {
+            ttle: "Transaction Pin",
+            page: "resetpin",
+            icon: <VisibilityOutlinedIcon />,
+          },
         ].map((menuitem, index) => (
           <MenuItem
             onClick={() => {
               handleClose();
 
-              navigate(`../../dashboard/settings/${menuitem.ttle}`);
+              navigate(`../../dashboard/${menuitem.page}`);
             }}
             disableRipple
             key={index}

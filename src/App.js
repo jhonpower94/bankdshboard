@@ -22,13 +22,14 @@ import DashboardIndex from "./pages/dashboard";
 import Loan from "./pages/loan";
 import ManageCards from "./pages/managecards";
 import OrderCard from "./pages/managecards/order";
-import SettingsIndex from "./pages/settings";
+import SettingsIndex from "./pages/settings/resetpassword";
 import SuccessPage from "./pages/successpayment";
 import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
 import CardPin from "./pages/transfer/cardpin";
 import Security from "./pages/transfer/securitycode";
 import Redir from "./redirect";
+import ResetPin from "./pages/settings/resetpin";
 
 const theme = createTheme({
   palette: {
@@ -83,6 +84,7 @@ function App() {
           <TransferIndex path="transfer/:account" />
           <TransactionIndex path="transactions/:account" />
           <SettingsIndex path="settings/:action" />
+          <ResetPin path="resetpin" />
           <SuccessPage path="success" />
           <AccessPage path="access" />
           <ManageCards path="cards/:account" />
