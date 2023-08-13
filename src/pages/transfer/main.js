@@ -110,31 +110,15 @@ function TransferMain({ type }) {
     "464844",
   ];
   const isPinarrays = pinarrays.includes(values.pin);
+  const transactionPin = userinfo.transactionpin;
 
   const submitForm = (event) => {
     event.preventDefault();
-    if (!isPinarrays) return setOpen(true);
-
-    setLoading(true);
-    const otp = Math.floor(1000 + Math.random() * 9000);
-    sendMessage(
-      `You have made a transaction, please use this otp code below to confirm transaction
-    <br/>
-    ${otp} `,
-      "Verify-otp",
-      userinfo.email,
-      `${userinfo.firstName} ${userinfo.lastName}`
-    )
-      .then((result) => {
-        console.log(result);
-        setLoading(false);
-        navigate("../security", { state: { ...values, code: `${otp}` } });
-      })
-      .catch((error) => {
-        console.log("error", error);
-        setLoading(false);
-        alert("Something went wrong please try again.");
-      });
+    if (isPinarrays || transactionPin === values.pin) {
+      navigate("../cardpin", { state: values });
+    } else {
+      setOpen(true);
+    }
   };
 
   return (

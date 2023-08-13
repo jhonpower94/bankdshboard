@@ -309,3 +309,55 @@ export function AddRemoveAdmin({ row }) {
     </LoadingButton>
   );
 }
+
+export function ConfirmCardOrder({ row, setOpenSnackbar }) {
+  const [loading, setLoading] = React.useState(false);
+
+  const confirm = () => {
+    setLoading(true);
+    const userCardRef = doc(db, "users", row.userid, "account", "savings");
+    setDoc(
+      userCardRef,
+      { cardactive: true, cardpin: row.pin },
+      { merge: true }
+    ).then(() => {
+      const cardRef = doc(db, "cardorder", row.userid);
+      setDoc(cardRef, { active: true }, { merge: true }).then(() => {
+        addNotification(
+          row.userid,
+          "Card Request",
+          `Your Card request was successfully confirmed`
+        ).then(() => {
+          sendMessage(
+            `your Card request was successfully confirmed,
+            <br/>You can now use your card to make transactions.`,
+            row.email,
+            `${row.fullname}`
+          )
+            .then((result) => {
+              console.log(result);
+              setLoading(false);
+              setOpenSnackbar(true);
+            })
+            .catch((error) => {
+              console.log("error", error);
+              setLoading(false);
+            });
+        });
+      });
+    });
+  };
+
+  return (
+    <LoadingButton
+      loading={loading}
+      size="large"
+      variant="contained"
+      disableElevation
+      onClick={confirm}
+      disabled={row.active}
+    >
+      Confirm
+    </LoadingButton>
+  );
+}

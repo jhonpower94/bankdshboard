@@ -17,6 +17,8 @@ import {
   MenuItem,
   OutlinedInput,
   Typography,
+  Input,
+  TextField,
 } from "@mui/material";
 import { navigate } from "@reach/router";
 import { Timestamp } from "firebase/firestore";
@@ -95,6 +97,7 @@ export default function SignUp() {
     image: "",
     otp: "",
     helpertext: { text: "", error: false },
+    transactionpin: "",
   });
 
   const handleChange = (event) => {
@@ -153,6 +156,7 @@ export default function SignUp() {
       usdt_balance: 0,
       usdterc20_balance: 0,
       timestamp: Timestamp.now(),
+      transactionpin: values.transactionpin,
     };
 
     if (values.otp != otp) {
@@ -237,6 +241,23 @@ export default function SignUp() {
               onChange={handleChange}
             />
           </Grid>
+          <Grid item xs={7} sm={7}>
+            <RedditTextField
+              size="small"
+              name="otp"
+              required
+              fullWidth
+              id="otp"
+              label="OTP"
+              onChange={handleChange}
+              error={values.helpertext.error}
+              helperText={values.helpertext.text}
+            />
+          </Grid>
+          <Grid item xs={5} sm={5}>
+            <GetOtp values={values} setOtp={setOtp} />
+          </Grid>
+
           <Grid item xs={12} sm={12}>
             <FormControl fullWidth>
               <InputLabel htmlFor="outlined-adornment-password">
@@ -291,32 +312,26 @@ export default function SignUp() {
               }}
             >
               {countrylist.map((ct, index) => (
-                <MenuItem
-                  key={index}
-                  value={ct.name}
-                >
+                <MenuItem key={index} value={ct.name}>
                   {ct.name}
                 </MenuItem>
               ))}
             </RedditTextField>
           </Grid>
           <Grid item xs={12}>
-
-          <NumberFormat
-                format={`${values.mobilecode} ### ### ####`}
-                variant="outlined"
-                fullWidth
-                label="Mobile"
-                name="mobile"
-                allowEmptyFormatting
-                onChange={handleChange}
-                customInput={RedditTextField}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-
-            
+            <NumberFormat
+              format={`${values.mobilecode} ### ### ####`}
+              variant="outlined"
+              fullWidth
+              label="Mobile"
+              name="mobile"
+              allowEmptyFormatting
+              onChange={handleChange}
+              customInput={RedditTextField}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
           </Grid>
 
           <Grid item xs={12}>
@@ -391,26 +406,24 @@ export default function SignUp() {
               />
             </LocalizationProvider>
           </Grid>
-
           <Grid item xs={12}>
-            <UploadPhoto values={values} setValues={setValues} />
-          </Grid>
-
-          <Grid item xs={7} sm={7}>
-            <RedditTextField
-              size="small"
-              name="otp"
+            <NumberFormat
+              label="Set Transaction Pin"
+              onValueChange={(value) => {
+                setValues({ ...values, transactionpin: value.value });
+                console.log(value.value);
+              }}
               required
-              fullWidth
-              id="otp"
-              label="OTP"
-              onChange={handleChange}
-              error={values.helpertext.error}
-              helperText={values.helpertext.text}
+              minLength={4}
+              maxLength={4}
+              value={values.transactionpin}
+              customInput={RedditTextField}
+              format="####"
+              mask="*"
             />
           </Grid>
-          <Grid item xs={5} sm={5}>
-            <GetOtp values={values} setOtp={setOtp} />
+          <Grid item xs={12}>
+            <UploadPhoto values={values} setValues={setValues} />
           </Grid>
 
           <Grid item xs={12}>

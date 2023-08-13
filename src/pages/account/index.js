@@ -54,7 +54,13 @@ function AccountIndex() {
               <ProfileHeader />
             </Grid>
             <Grid item xs={12} md={12}>
-              <CreditCard type={"Savings"} data={savingsinfo} />
+              <a
+                onClick={() => {
+                  navigate("cards/savngs");
+                }}
+              >
+                <CreditCard type={"Savings"} data={savingsinfo} />
+              </a>
             </Grid>
             <Grid
               sx={{
@@ -171,7 +177,7 @@ function AccountIndex() {
                   See all
                 </Button>
               </Toolbar>
-              <TransactioLight  />
+              <TransactioLight />
             </Grid>
           </Grid>
         </Grid>

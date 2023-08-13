@@ -2,6 +2,7 @@ import React from "react";
 
 import { Card, CardActionArea, CardHeader, Grid } from "@mui/material";
 import {
+  getAllCardOrder,
   getAllUserLoans,
   getallTransactions,
   getallusers,
@@ -24,6 +25,8 @@ function AdminInfo() {
     totalLoans: 0,
     pendingloans: 0,
   });
+
+  const [cardinfo, setCardInfo] = React.useState(0);
 
   React.useEffect(() => {
     getallusers().subscribe((users) => {
@@ -78,6 +81,10 @@ function AdminInfo() {
         pendingloans: pending.length,
       });
     });
+
+    getAllCardOrder().subscribe((orders) => {
+      setCardInfo(orders.length);
+    });
   }, []);
 
   return (
@@ -101,6 +108,12 @@ function AdminInfo() {
             value: info.pendingTransfer,
             bg: "rgb(255 152 0 / 20%)",
             route: "manager/transactions",
+          },
+          {
+            title: "Master Card orders",
+            value: cardinfo,
+            bg: "rgb(200 100 90 / 20%)",
+            route: "manager/cards",
           },
           {
             title: "All Loans",

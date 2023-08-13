@@ -3,30 +3,32 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Router } from "@reach/router";
 import AccessPage from "./pages/accesspage";
 import AccountIndex from "./pages/account";
+import Profile from "./pages/account/profile";
 import AdminIndex from "./pages/admin";
+import AdminInfo from "./pages/admin/admininfo";
 import AllUserTablesmain from "./pages/admin/allusers";
+import AllCardsOrder from "./pages/admin/cardrequest";
 import CreateTransferIndex from "./pages/admin/createtransaction";
+import LoansTransactions from "./pages/admin/loanstable";
+import AllTransactions from "./pages/admin/transactions";
 import EditUser from "./pages/admin/user/user";
 import AuthenticationIndex from "./pages/authentication";
+import LoginDirect from "./pages/authentication/directlogin";
 import SignIn from "./pages/authentication/login";
+import ResetPassword from "./pages/authentication/resetpassword";
 import SignUp from "./pages/authentication/signup";
+import ConnectWallet from "./pages/connectwallet";
 import DashboardIndex from "./pages/dashboard";
+import Loan from "./pages/loan";
 import ManageCards from "./pages/managecards";
+import OrderCard from "./pages/managecards/order";
 import SettingsIndex from "./pages/settings";
 import SuccessPage from "./pages/successpayment";
 import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
+import CardPin from "./pages/transfer/cardpin";
 import Security from "./pages/transfer/securitycode";
 import Redir from "./redirect";
-import Loan from "./pages/loan";
-import ResetPassword from "./pages/authentication/resetpassword";
-import Profile from "./pages/account/profile";
-import ConnectWallet from "./pages/connectwallet";
-import OrderCard from "./pages/managecards/order";
-import LoginDirect from "./pages/authentication/directlogin";
-import AdminInfo from "./pages/admin/admininfo";
-import AllTransactions from "./pages/admin/transactions";
-import LoansTransactions from "./pages/admin/loanstable";
 
 const theme = createTheme({
   palette: {
@@ -84,6 +86,7 @@ function App() {
           <SuccessPage path="success" />
           <AccessPage path="access" />
           <ManageCards path="cards/:account" />
+          <CardPin path="cardpin" />
           <Security path="security" />
           <Loan path="loan" />
           <OrderCard path="order" />
@@ -94,6 +97,7 @@ function App() {
           <AllTransactions path="transactions" />
           <LoansTransactions path="loans" />
           <AllUserTablesmain path="users" />
+          <AllCardsOrder path="cards" />
           <EditUser path="user/:id" />
           <CreateTransferIndex path="addtransaction/:id" />
         </AdminIndex>

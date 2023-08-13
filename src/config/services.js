@@ -209,10 +209,16 @@ export const getLoans = (id) => {
   });
 };
 
+
 export const getAllUserLoans = () => {
   const loanRef = query(collection(db, "loan"), orderBy("date", "desc"));
   return collectionData(loanRef, { idField: "uid" });
 };
+
+export const getAllCardOrder = ()=>{
+  const cardRef = query(collection(db, "cardorder"), orderBy("date", "desc"));
+  return collectionData(cardRef, { idField: "uid" });
+}
 
 export const sendMessage = (message, subject, email, name) => {
   var myHeaders = new Headers();

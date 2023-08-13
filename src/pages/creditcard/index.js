@@ -3,23 +3,18 @@ import NumberFormat from "react-number-format";
 import { useSelector } from "react-redux";
 import "./card.css";
 import mastercardlogo from "./mastercard.svg";
-import { navigate } from "@reach/router";
 
 function CreditCard({ type, data }) {
   const userinfo = useSelector((state) => state.useInfos);
 
   return (
     <div>
-      <div
-        className="card"
-        onClick={() => {
-          navigate("cards/savngs");
-        }}
-      >
+      <div className="card">
         <div className="card__front card__part">
           <Typography
+            variant="h6"
             className="card__front-square card__square"
-            sx={{ color: "#fff" }}
+            sx={{ color: "#fff", textTransform: "capitalize" }}
           >
             {type}
           </Typography>
