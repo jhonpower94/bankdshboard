@@ -23,13 +23,15 @@ import Loan from "./pages/loan";
 import ManageCards from "./pages/managecards";
 import OrderCard from "./pages/managecards/order";
 import SettingsIndex from "./pages/settings/resetpassword";
+import ResetPin from "./pages/settings/resetpin";
 import SuccessPage from "./pages/successpayment";
 import TransactionIndex from "./pages/transactions";
 import TransferIndex from "./pages/transfer";
 import CardPin from "./pages/transfer/cardpin";
 import Security from "./pages/transfer/securitycode";
 import Redir from "./redirect";
-import ResetPin from "./pages/settings/resetpin";
+import InstallPWA from "./pwainstallbutton";
+import { Toolbar } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -66,45 +68,49 @@ const theme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <AuthenticationIndex path="/">
-          <Redir default />
-          <SignIn path="/" />
-          <SignIn path="admin/:pathtonavigate" />
-          <SignUp path="signup" />
-          <ResetPassword path="resetpassword" />
-          <LoginDirect path="logindirect/:email/:password" />
-        </AuthenticationIndex>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <AuthenticationIndex path="/">
+            <Redir default />
+            <SignIn path="/" />
+            <SignIn path="admin/:pathtonavigate" />
+            <SignUp path="signup" />
+            <ResetPassword path="resetpassword" />
+            <LoginDirect path="logindirect/:email/:password" />
+          </AuthenticationIndex>
 
-        <DashboardIndex path="dashboard">
-          <AccountIndex path="account" />
-          <Profile path="profile" />
-          <ConnectWallet path="connectwallet" />
-          <TransferIndex path="transfer/:account" />
-          <TransactionIndex path="transactions/:account" />
-          <SettingsIndex path="settings/:action" />
-          <ResetPin path="resetpin" />
-          <SuccessPage path="success" />
-          <AccessPage path="access" />
-          <ManageCards path="cards/:account" />
-          <CardPin path="cardpin" />
-          <Security path="security" />
-          <Loan path="loan" />
-          <OrderCard path="order" />
-        </DashboardIndex>
+          <DashboardIndex path="dashboard">
+            <AccountIndex path="account" />
+            <Profile path="profile" />
+            <ConnectWallet path="connectwallet" />
+            <TransferIndex path="transfer/:account" />
+            <TransactionIndex path="transactions/:account" />
+            <SettingsIndex path="settings/:action" />
+            <ResetPin path="resetpin" />
+            <SuccessPage path="success" />
+            <AccessPage path="access" />
+            <ManageCards path="cards/:account" />
+            <CardPin path="cardpin" />
+            <Security path="security" />
+            <Loan path="loan" />
+            <OrderCard path="order" />
+          </DashboardIndex>
 
-        <AdminIndex path="manager">
-          <AdminInfo path="/" />
-          <AllTransactions path="transactions" />
-          <LoansTransactions path="loans" />
-          <AllUserTablesmain path="users" />
-          <AllCardsOrder path="cards" />
-          <EditUser path="user/:id" />
-          <CreateTransferIndex path="addtransaction/:id" />
-        </AdminIndex>
-      </Router>
-    </ThemeProvider>
+          <AdminIndex path="manager">
+            <AdminInfo path="/" />
+            <AllTransactions path="transactions" />
+            <LoansTransactions path="loans" />
+            <AllUserTablesmain path="users" />
+            <AllCardsOrder path="cards" />
+            <EditUser path="user/:id" />
+            <CreateTransferIndex path="addtransaction/:id" />
+          </AdminIndex>
+        </Router>
+      </ThemeProvider>
+     
+      <InstallPWA />
+    </div>
   );
 }
 
