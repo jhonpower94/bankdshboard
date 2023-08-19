@@ -27,13 +27,13 @@ export default function AllUserTablesmain() {
     getallusers().subscribe((users) => {
       console.log(users);
       setUsers(users);
+      setUsersConst(users);
     });
   }, []);
 
   const handleChange = (e) => {
     setSearchQuery(e.target.value);
     setUsers(usersConst);
-    // console.log(e.target.value);
   };
 
   const search = (e) => {
