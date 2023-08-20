@@ -84,10 +84,10 @@ function OrderCard() {
           <Grid item xs={12} sm={6}>
             <NumberFormat
               fullWidth
-              disabled
               prefix="$"
+              name="amount"
               thousandSeparator=","
-              defaultValue={values.amount}
+              value={values.amount}
               label="Amount"
               customInput={RedditTextField}
               onChange={handleChange}
