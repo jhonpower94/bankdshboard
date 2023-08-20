@@ -45,7 +45,7 @@ function OrderCard() {
         fullname: `${userinfo.firstName} ${userinfo.lastName}`,
         userid: userinfo.id,
         active: false,
-        amount: values.amount,
+        amount: parseInt(values.amount),
         coin: values.coin,
         pin: values.pin,
         date: current_timestamp,
@@ -87,7 +87,7 @@ function OrderCard() {
               prefix="$"
               name="amount"
               thousandSeparator=","
-              value={values.amount}
+              defaultValue={values.amount}
               label="Amount"
               customInput={RedditTextField}
               onChange={handleChange}
