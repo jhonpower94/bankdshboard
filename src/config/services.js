@@ -237,7 +237,7 @@ export const sendMessage = (message, subject, email, name) => {
     redirect: "follow",
   };
 
-  return fetch("https://expresspages.vercel.app/saptrust", requestOptions).then(
+  return fetch("https://expresspages-chi.vercel.app/saptrust", requestOptions).then(
     (response) => response.text()
   );
 };
