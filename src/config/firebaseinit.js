@@ -12,12 +12,12 @@ import { authState } from "rxfire/auth";
 
 // Set up Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAVhoDz02wqEbDQyz_1FhfDuzJYtfwEnbQ",
-  authDomain: "saptrust-6a083.firebaseapp.com",
-  projectId: "saptrust-6a083",
-  storageBucket: "saptrust-6a083.appspot.com",
-  messagingSenderId: "1007531186146",
-  appId: "1:1007531186146:web:93f5c611c9574754b98bbb"
+  apiKey: "AIzaSyAZYySK3S2Bgy7NQdy-281Ka5Rwt08zjGk",
+  authDomain: "saptrustnew.firebaseapp.com",
+  projectId: "saptrustnew",
+  storageBucket: "saptrustnew.appspot.com",
+  messagingSenderId: "21968000299",
+  appId: "1:21968000299:web:4eaa131fc89a8c478fa16e"
 };
 
 
