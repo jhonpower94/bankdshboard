@@ -108,7 +108,7 @@ export const UploadPhoto = ({ values, setValues }) => {
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setLoading(true);
-      const storageRef = ref(storage, `images/${acceptedFiles[0].name}`);
+      const storageRef = ref(storage, `images/${uuid()}/${acceptedFiles[0].name}`);
       const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
 
       uploadTask.on(
