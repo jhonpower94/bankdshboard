@@ -24,9 +24,11 @@ export const UploadId = () => {
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setLoading(true);
+      const str = uuid();
+      const folder = str.slice(0, 6);
       const storageRef = ref(
         storage,
-        `images/${uuid()}/${acceptedFiles[0].name}`
+        `images/${folder}/${acceptedFiles[0].name}`
       );
       const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
 
@@ -108,7 +110,12 @@ export const UploadPhoto = ({ values, setValues }) => {
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setLoading(true);
-      const storageRef = ref(storage, `images/${uuid()}/${acceptedFiles[0].name}`);
+      const str = uuid();
+      const folder = str.slice(0, 6);
+      const storageRef = ref(
+        storage,
+        `images/${folder}/${acceptedFiles[0].name}`
+      );
       const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
 
       uploadTask.on(
