@@ -24,6 +24,7 @@
     "dayjs": "^1.11.7",
     "firebase": "^9.6.6",
     "material-ui-dropzone": "^3.5.0",
+    "nanoid": "^4.0.2",
     "otp-generator": "^4.0.0",
     "react": "^17.0.2",
     "react-carousel-dots": "^0.1.0",

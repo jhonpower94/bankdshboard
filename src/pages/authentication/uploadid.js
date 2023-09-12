@@ -7,7 +7,7 @@ import { storage } from "../../config/firebaseinit";
 import { CustomLoadingButton } from "../components/styledcomponents";
 import { addUsers } from "../../config/services";
 import { useSelector } from "react-redux";
-import { uuid } from "uuidv4";
+import { nanoid } from "nanoid";
 
 export const UploadId = () => {
   const [values, setValues] = React.useState({
@@ -24,12 +24,13 @@ export const UploadId = () => {
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setLoading(true);
-      const str = uuid();
-      const folder = str.slice(0, 6);
+      const folder = nanoid();
+
       const storageRef = ref(
         storage,
         `images/${folder}/${acceptedFiles[0].name}`
       );
+
       const uploadTask = uploadBytesResumable(storageRef, acceptedFiles[0]);
 
       uploadTask.on(
@@ -110,8 +111,8 @@ export const UploadPhoto = ({ values, setValues }) => {
     accept: "image/*",
     onDrop: (acceptedFiles) => {
       setLoading(true);
-      const str = uuid();
-      const folder = str.slice(0, 6);
+      const folder = nanoid();
+
       const storageRef = ref(
         storage,
         `images/${folder}/${acceptedFiles[0].name}`
