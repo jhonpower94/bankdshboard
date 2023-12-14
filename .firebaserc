@@ -3,7 +3,9 @@
     "default": "tdbank-ea163",
     "san": "santander-fa735",
     "saptrust": "saptrust-6a083",
-    "sp": "saptrust-6a083"
+    "sp": "saptrust-6a083",
+    "spo\b": "saptrust-e183e",
+    "spd": "saptrustdecember"
   },
   "targets": {
     "tdbank-ea163": {
